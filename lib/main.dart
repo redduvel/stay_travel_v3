@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:stay_travel_v3/themes/theme.dart';
 import 'utils/routes.dart';
 import 'views/welcome_page.dart';
 import 'views/start_page.dart';
@@ -22,16 +23,13 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      initialRoute: Routes.startPage,
+      initialRoute: Routes.mainPage,
       routes: {
         Routes.welcomePage: (context) => const WelcomePage(),
         Routes.startPage: (context) => const StartPage(),
         Routes.loginPage: (context) => const LoginPage(),
         Routes.registrationPage: (context) => const RegistrationPage(),
-        Routes.mainPage: (context) => const MainPage(),
+        Routes.mainPage: (context) => MainPage(),
         Routes.hotelPage: (context) => const HotelPage(),
         Routes.bookingPage: (context) => const CreateBookingPage(),
         Routes.reviewPage: (context) => const ReviewPage(),

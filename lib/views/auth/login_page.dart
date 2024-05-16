@@ -77,7 +77,7 @@ class _LoginPageState extends State<LoginPage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     margin: 5,
                     onPressed: () {
-                      Navigator.pushNamed(context, Routes.hotelPage);
+                      Navigator.pushNamed(context, Routes.mainPage);
                       //TODO
                       //логика входа
                     }, 

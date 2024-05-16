@@ -1,7 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:json_theme/json_theme.dart';
-
-final _theme = {
+{
   "applyElevationOverlayColor": false,
   "brightness": "light",
   "buttonTheme": {
@@ -1113,12 +1110,4 @@ final _theme = {
   "unselectedWidgetColor": "#8a000000",
   "useMaterial3": true,
   "visualDensity": "compact"
-};
-
-
-class AppTheme {
-  static ThemeData? appTheme = ThemeDecoder.decodeThemeData(
-    _theme, 
-    validate: false,
-  );
 }
