@@ -11,6 +11,16 @@ class NotificationsTab extends StatefulWidget {
 class _NotificationsTabState extends State<NotificationsTab> {
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Уведомления'),
+        actions: [
+          IconButton(onPressed: () {}, icon: const Icon(Icons.clear_all)),
+          IconButton(onPressed: () {}, icon: const Icon(Icons.done_all))
+        ],
+        automaticallyImplyLeading: false,
+        surfaceTintColor: Colors.white,
+      ),
+    );
   }
 }

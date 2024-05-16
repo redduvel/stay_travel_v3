@@ -14,7 +14,7 @@ class ApiService {
 
   Dio dio = Dio(
     BaseOptions(
-      baseUrl: 'http://localhost:5000',
+      baseUrl: 'https://stay-travel-v3-api.onrender.com',
       headers: {
         'Content-Type': 'application/json',
       },

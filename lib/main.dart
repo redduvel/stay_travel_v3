@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:stay_travel_v3/themes/theme.dart';
 import 'utils/routes.dart';
 import 'views/welcome_page.dart';
 import 'views/start_page.dart';
@@ -22,8 +21,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
-      initialRoute: Routes.mainPage,
+      title: 'StayTravel',
       routes: {
         Routes.welcomePage: (context) => const WelcomePage(),
         Routes.startPage: (context) => const StartPage(),
@@ -37,6 +35,8 @@ class MyApp extends StatelessWidget {
         Routes.settingsPage: (context) => const ProfileSettingsPage(),
       },
       debugShowCheckedModeBanner: false,
+      initialRoute: Routes.mainPage,
+      home: MainPage(),
     );
   }
 }
