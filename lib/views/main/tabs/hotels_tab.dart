@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:stay_travel_v3/themes/colors.dart';
 import 'package:stay_travel_v3/themes/text_styles.dart';
 import 'package:stay_travel_v3/utils/static_functions.dart';
+import 'package:stay_travel_v3/widgets/hotel_widget.dart';
 
 class HotelsTab extends StatefulWidget {
   const HotelsTab({super.key});
@@ -14,18 +15,18 @@ class HotelsTab extends StatefulWidget {
 class _HotelsTabState extends State<HotelsTab> {
   final TextEditingController _searchController = TextEditingController();
 
-  List<String> hotelFeatures = [
-    'Бесплатный Wi-Fi',
-    'Спа-центр',
-    'Завтрак включен',
-    'Фитнес-центр',
-    'Бассейн',
-    'Трансфер от/до аэропорта',
-    'Парковка',
-    'Ресторан и бар',
-    'Конференц-залы',
-    'Допуск с домашними животными',
-  ];
+  Map<String, IconData> hotelFeatures = {
+    'Бесплатный Wi-Fi': Icons.wifi,
+    'Спа-центр': Icons.spa,
+    'Завтрак включен': Icons.egg_alt,
+    'Фитнес-центр': Icons.fitness_center,
+    'Бассейн': Icons.pool_sharp,
+    'Трансфер от/до аэропорта': Icons.airport_shuttle,
+    'Парковка': Icons.local_parking,
+    'Ресторан и бар': Icons.restaurant,
+    'Конференц-залы': Icons.videocam,
+    'Допуск с домашними животными': Icons.pets,
+  };
 
   @override
   Widget build(BuildContext context) {
@@ -62,16 +63,16 @@ class _HotelsTabState extends State<HotelsTab> {
                         Expanded(
                           child: Wrap(
                             spacing: 5,
-                            children: List.generate(
-                              hotelFeatures.length,
-                              (index) => Chip(
-                                label: Text(hotelFeatures[index]),
-                                backgroundColor: AppColors.grey,
-                                shape: null,
-                              ),
+                            children: hotelFeatures.entries.map((entry) {
+                                return Chip(
+                                  avatar: Icon(entry.value, color: AppColors.black),
+                                  label: Text(entry.key),
+                                  backgroundColor: AppColors.orange,
+                                  side: BorderSide.none,
+                                );
+                              }).toList(),
                             ),
                           ),
-                        ),
                       ],
                     ),
                   ),
@@ -91,14 +92,7 @@ class _HotelsTabState extends State<HotelsTab> {
               runSpacing: 5,
               children: List.generate(
                   5,
-                  (index) => Container(
-                        width: double.infinity,
-                        height: 150,
-                        decoration: const BoxDecoration(
-                            color: AppColors.grey3,
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(12))),
-                      )),
+                  (index) => HotelWidget()),
             )),
           ],
         ),

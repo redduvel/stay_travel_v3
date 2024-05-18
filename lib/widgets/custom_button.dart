@@ -109,7 +109,7 @@ class _CustomButtonState extends State<CustomButton> {
             ),
             const SizedBox(width: 10),
             SizedBox(
-              width: (widget.width! - 200),
+              width: (widget.width! - 100),
               child: Text(
                 widget.text,
                 style: const TextStyle(
@@ -136,21 +136,21 @@ class _CustomButtonState extends State<CustomButton> {
 
 ButtonStyle _style(Color backgroundColor, double width, double height) {
   return ButtonStyle(
-    backgroundColor: MaterialStateProperty.all<Color>(backgroundColor),
-    foregroundColor: MaterialStateProperty.all<Color>(const Color.fromRGBO(23, 26, 31, 1)),
-    padding: MaterialStateProperty.all<EdgeInsets>(const EdgeInsets.symmetric(horizontal: 10, vertical: 5)),
-    shape: MaterialStateProperty.all<OutlinedBorder>(
+    backgroundColor: WidgetStateProperty.all<Color>(backgroundColor),
+    foregroundColor: WidgetStateProperty.all<Color>(const Color.fromRGBO(23, 26, 31, 1)),
+    padding: WidgetStateProperty.all<EdgeInsets>(const EdgeInsets.symmetric(horizontal: 10, vertical: 5)),
+    shape: WidgetStateProperty.all<OutlinedBorder>(
       const RoundedRectangleBorder(
         borderRadius: BorderRadius.all(Radius.circular(6)),
       ),
     ),
-    minimumSize: MaterialStateProperty.all<Size>(
+    minimumSize: WidgetStateProperty.all<Size>(
       const Size(0, 40), // Значение минимальной ширины изменено на 0
     ),
-    maximumSize: MaterialStateProperty.all<Size>(
+    maximumSize: WidgetStateProperty.all<Size>(
       const Size(double.infinity, double.infinity)
     ),
-    fixedSize: MaterialStateProperty.all<Size>(
+    fixedSize: WidgetStateProperty.all<Size>(
       Size(width, height), 
     ),
   );
