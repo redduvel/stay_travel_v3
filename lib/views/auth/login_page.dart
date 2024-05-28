@@ -1,6 +1,7 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+import 'package:provider/provider.dart';
+import 'package:stay_travel_v3/controllers/user_controller.dart';
+import 'package:stay_travel_v3/utils/logger.dart';
 import 'package:stay_travel_v3/utils/routes.dart';
 
 import '../../themes/colors.dart';
@@ -76,11 +77,17 @@ class _LoginPageState extends State<LoginPage> {
                     width: 500,
                     mainAxisAlignment: MainAxisAlignment.center,
                     margin: 5,
-                    onPressed: () {
-                      Navigator.pushNamed(context, Routes.mainPage);
-                      //TODO
-                      //логика входа
-                    }, 
+                    onPressed: () async {
+                      await context.read<AuthProvider>().login(
+                            _emailOrNumberController.text,
+                            _passwordController.text,
+                          );
+                      if (context.read<AuthProvider>().user != null) {
+                        Navigator.pushNamed(context, Routes.mainPage);
+                      } else {
+                        Logger.log("error login", level: LogLevel.error);
+                      }
+                    },
                   ),
                   CustomButton.normal(
                     text: 'Назад',

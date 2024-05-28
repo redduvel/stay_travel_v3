@@ -1,6 +1,7 @@
+import 'dart:io';
 import 'package:dio/dio.dart';
-import 'package:stay_travel_v3/controllers/user_controller.dart';
-
+import 'package:dio/io.dart';
+import '../models/feature.dart';
 import '../models/user.dart';
 import '../models/hotel.dart';
 import '../models/review.dart';
@@ -10,16 +11,22 @@ import '../utils/logger.dart';
 import 'local_storage_service.dart'; // Импортируем LocalStorageService
 
 class ApiService {
+  static ApiService? _instance;
   static bool serverAviable = false;
+
+  static ApiService get instance {
+    _instance ??= ApiService._internal();
+    return _instance!;
+  }
+
+  ApiService._internal();
 
   Dio dio = Dio(
     BaseOptions(
-      baseUrl: 'https://stay-travel-v3-api.onrender.com',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      baseUrl: Uri.parse('https://set-chicken-purely.ngrok-free.app').toString(),
     ),
   );
+  
 
   // Получение заголовков с токеном
   Options _getHeaders() {
@@ -53,9 +60,10 @@ class ApiService {
       if (response.data['token'] != null) {
         await LocalStorageService.saveToken(response.data['token']);
       }
+      
+      User user = User.fromJson(response.data);
 
-      UserController.setUser(User.fromJson(response.data['user']));
-      return UserController.getUser();
+      return user;
     } catch (e) {
       Logger.log('$e', level: LogLevel.error);
       return null;
@@ -71,8 +79,9 @@ class ApiService {
         await LocalStorageService.saveToken(response.data['token']);
       }
 
-      UserController.setUser(User.fromJson(response.data['user']));
-      return UserController.getUser();
+      User user = User.fromJson(response.data['user']);
+      
+      return user;
     } catch (e) {
       Logger.log('$e', level: LogLevel.error);
       return null;
@@ -82,8 +91,14 @@ class ApiService {
   // Получение списка отелей
   Future<List<Hotel>> fetchHotels({int skip = 0, int limit = 10}) async {
     try {
-      final response = await dio
-          .get('/hotels', queryParameters: {'skip': skip, 'limit': limit});
+      (dio.httpClientAdapter as IOHttpClientAdapter).onHttpClientCreate = (HttpClient client) {
+        client.badCertificateCallback = (X509Certificate cert, String host, int port) => true;
+        return client;
+      };
+
+
+      final response = await dio.get('/hotels', queryParameters: {'page': skip, 'limit': limit});
+      
       return List<Hotel>.from(
           response.data['hotels'].map((hotel) => Hotel.fromJson(hotel)));
     } catch (e) {
@@ -203,6 +218,29 @@ class ApiService {
     } catch (e) {
       Logger.log('$e', level: LogLevel.error);
       return false;
+    }
+  }
+
+  // получение особенностей отеля
+  Future<List<Feature>> fetchFeatures() async {
+    try {
+      (dio.httpClientAdapter as IOHttpClientAdapter).onHttpClientCreate = (HttpClient client) {
+        client.badCertificateCallback = (X509Certificate cert, String host, int port) => true;
+        return client;
+      };
+
+
+      final response = await dio.get('/features/');
+
+      if (response.statusCode == 200) {
+        List<dynamic> data = response.data;
+        return data.map((json) => Feature.fromJson(json)).toList();
+      } else {
+        throw Exception('Failed to load features');
+      } 
+    } catch (e) {
+      Logger.log('$e', level: LogLevel.error);
+      return [];
     }
   }
 }

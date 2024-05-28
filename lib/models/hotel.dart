@@ -1,3 +1,4 @@
+import 'feature.dart';
 import 'review.dart';
 
 class Hotel {
@@ -5,9 +6,10 @@ class Hotel {
   final String name;
   final String description;
   final String address;
-  final double averageRating;
+  final double? averageRating;
   final List<String> images;
-  final List<Review> reviews;
+  final List<Review>? reviews;
+  final List<Feature> features;
   final bool isDeleted;
   final DateTime createdAt;
 
@@ -21,17 +23,19 @@ class Hotel {
     required this.reviews,
     this.isDeleted = false,
     required this.createdAt,
+    required this.features
   });
 
   factory Hotel.fromJson(Map<String, dynamic> json) {
     return Hotel(
-      id: json['id'],
+      id: json['_id'],
       name: json['name'],
       description: json['description'],
       address: json['address'],
-      averageRating: json['averageRating'].toDouble(),
+      averageRating: json['averageRating'],
       images: List<String>.from(json['images']),
-      reviews: List<Review>.from(json['reviews'].map((model) => Review.fromJson(model))),
+      reviews: List<Review>.from(json['reviews'].map((model) => Review.fromJson(model)) ?? []),
+      features: List<Feature>.from(json['features'].map((model) => Feature.fromJson(model)) ?? []),
       isDeleted: json['isDeleted'] ?? false,
       createdAt: DateTime.parse(json['createAt']),
     );
@@ -45,7 +49,7 @@ class Hotel {
       'address': address,
       'averageRating': averageRating,
       'images': images,
-      'reviews': reviews.map((review) => review.toJson()).toList(),
+      'reviews': reviews!.map((review) => review.toJson()).toList(),
       'isDeleted': isDeleted,
       'createAt': createdAt.toIso8601String(),
     };

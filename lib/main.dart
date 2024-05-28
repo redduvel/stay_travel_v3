@@ -1,18 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:stay_travel_v3/controllers/features_controller.dart';
+import 'package:stay_travel_v3/controllers/hotel_controller.dart';
+import 'package:stay_travel_v3/controllers/user_controller.dart';
+import 'package:stay_travel_v3/services/local_storage_service.dart';
 import 'utils/routes.dart';
-import 'views/welcome_page.dart';
-import 'views/start_page.dart';
-import 'views/auth/login_page.dart';
-import 'views/auth/registration_page.dart';
 import 'views/main/main_page.dart';
-import 'views/hotel/hotel_page.dart';
-import 'views/booking/create_booking_page.dart';
-import 'views/hotel/review_page.dart';
-import 'views/profile/profile_details_page.dart';
-import 'views/profile/profile_settings_page.dart';
 
-void main() {
-  runApp(const MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await LocalStorageService.initialize();
+  await LocalStorageService.clear();
+
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => HotelController()..fetchHotels()),
+        ChangeNotifierProvider(create: (context) => AuthProvider()),
+        ChangeNotifierProvider(create: (context) => FeaturesController()),
+      ],
+      child: const MyApp()
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -20,20 +29,11 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    LocalStorageService.initialize();
+
     return MaterialApp(
       title: 'StayTravel',
-      routes: {
-        Routes.welcomePage: (context) => const WelcomePage(),
-        Routes.startPage: (context) => const StartPage(),
-        Routes.loginPage: (context) => const LoginPage(),
-        Routes.registrationPage: (context) => const RegistrationPage(),
-        Routes.mainPage: (context) => MainPage(),
-        Routes.hotelPage: (context) => const HotelPage(),
-        Routes.bookingPage: (context) => const CreateBookingPage(),
-        Routes.reviewPage: (context) => const ReviewPage(),
-        Routes.profilePage: (context) => const ProfileDetailsPage(),
-        Routes.settingsPage: (context) => const ProfileSettingsPage(),
-      },
+      onGenerateRoute: AppRoutes.generateRoute,
       debugShowCheckedModeBanner: false,
       initialRoute: Routes.mainPage,
       home: MainPage(),

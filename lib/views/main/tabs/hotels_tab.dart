@@ -1,9 +1,14 @@
 // Hotels Tab
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:skeletonizer/skeletonizer.dart';
+import 'package:stay_travel_v3/controllers/hotel_controller.dart';
 import 'package:stay_travel_v3/themes/colors.dart';
 import 'package:stay_travel_v3/themes/text_styles.dart';
 import 'package:stay_travel_v3/utils/static_functions.dart';
-import 'package:stay_travel_v3/widgets/hotel_widget.dart';
+import 'package:stay_travel_v3/widgets/hotel_features.dart';
+import 'package:stay_travel_v3/widgets/hotel_list_widget.dart';
+import 'package:stay_travel_v3/widgets/paginated_hotels_list.dart';
 
 class HotelsTab extends StatefulWidget {
   const HotelsTab({super.key});
@@ -14,19 +19,6 @@ class HotelsTab extends StatefulWidget {
 
 class _HotelsTabState extends State<HotelsTab> {
   final TextEditingController _searchController = TextEditingController();
-
-  Map<String, IconData> hotelFeatures = {
-    'Бесплатный Wi-Fi': Icons.wifi,
-    'Спа-центр': Icons.spa,
-    'Завтрак включен': Icons.egg_alt,
-    'Фитнес-центр': Icons.fitness_center,
-    'Бассейн': Icons.pool_sharp,
-    'Трансфер от/до аэропорта': Icons.airport_shuttle,
-    'Парковка': Icons.local_parking,
-    'Ресторан и бар': Icons.restaurant,
-    'Конференц-залы': Icons.videocam,
-    'Допуск с домашними животными': Icons.pets,
-  };
 
   @override
   Widget build(BuildContext context) {
@@ -48,52 +40,24 @@ class _HotelsTabState extends State<HotelsTab> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),
-        child: CustomScrollView(
+        child:  CustomScrollView(
           scrollDirection: Axis.vertical,
           slivers: [
+            const SliverToBoxAdapter(child: HotelFeaturesList()),
             SliverToBoxAdapter(
-              child: SizedBox(
-                height: 150,
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: SizedBox(
-                    width: (hotelFeatures.length / 3.ceil()) * (MediaQuery.sizeOf(context).width * 0.5),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Wrap(
-                            spacing: 5,
-                            children: hotelFeatures.entries.map((entry) {
-                                return Chip(
-                                  avatar: Icon(entry.value, color: AppColors.black),
-                                  label: Text(entry.key),
-                                  backgroundColor: AppColors.orange,
-                                  side: BorderSide.none,
-                                );
-                              }).toList(),
-                            ),
-                          ),
-                      ],
+              child: Consumer<HotelController>(
+                builder: (context, value, child) {
+                  return Skeletonizer(
+                    enabled: value.isLoading,
+                    child: const Text(
+                      'Популярные отели',
+                      style: AppTextStyles.subheaderBoldStyle,
                     ),
-                  ),
-                ),
+                  );
+                },
               ),
             ),
-            const SliverToBoxAdapter(
-              child: Text(
-                'Популярные отели',
-                style: AppTextStyles.subheaderBoldStyle,
-              ),
-            ),
-            SliverToBoxAdapter(
-                child: Wrap(
-              direction: Axis.horizontal,
-              spacing: 3,
-              runSpacing: 5,
-              children: List.generate(
-                  5,
-                  (index) => HotelWidget()),
-            )),
+            const PaginatedHotelList()
           ],
         ),
       ),

@@ -36,13 +36,11 @@ class _ProfileTabState extends State<ProfileTab> {
                     ),
                     SizedBox(width: 20),
                     SizedBox(
-                      width: 200,
-                      child: Text(
-                        'Matvey Lazarev', 
-                        style: AppTextStyles.headerStyle,
-                        
-                      )
-                    )
+                        width: 200,
+                        child: Text(
+                          'Matvey Lazarev',
+                          style: AppTextStyles.headerStyle,
+                        ))
                   ],
                 ),
               ),
@@ -52,7 +50,8 @@ class _ProfileTabState extends State<ProfileTab> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text('Настройки аккаунта', style: AppTextStyles.subheaderBoldStyle),
+                  const Text('Настройки аккаунта',
+                      style: AppTextStyles.subheaderBoldStyle),
                   CustomButton.icon(
                     text: 'Персональная информация',
                     icon: Icons.person_outline_outlined,
@@ -74,7 +73,10 @@ class _ProfileTabState extends State<ProfileTab> {
                     backgroundColor: AppColors.grey,
                     onPressed: () {},
                   ),
-                  const Text('Поддержка', style: AppTextStyles.subheaderBoldStyle,),
+                  const Text(
+                    'Поддержка',
+                    style: AppTextStyles.subheaderBoldStyle,
+                  ),
                   CustomButton.header(
                     header: 'Центр безопасности',
                     text:

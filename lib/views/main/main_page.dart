@@ -1,7 +1,9 @@
 // Main Page  
 import 'package:flutter/material.dart';
+import 'package:stay_travel_v3/services/local_storage_service.dart';
 import 'package:stay_travel_v3/themes/colors.dart';
 import 'package:stay_travel_v3/themes/text_styles.dart';
+import 'package:stay_travel_v3/utils/routes.dart';
 import 'tabs/bookings_tab.dart';
 import 'tabs/favorites_tab.dart';
 import 'tabs/hotels_tab.dart';
@@ -37,9 +39,13 @@ class _MainPageState extends State<MainPage> {
   ];
 
   void onTabTapped(int index) {
-    setState(() {
-      _currentIndex = index;
-    });
+    if (index == 4 && LocalStorageService.getToken() == null) {
+      Navigator.pushNamed(context, Routes.startPage);
+    } else {
+      setState(() {
+        _currentIndex = index;
+      });
+    }
   }
 
   @override
