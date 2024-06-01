@@ -25,15 +25,15 @@ class User {
 
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
-      id: json['id'],
+      id: json['_id'],
       username: json['username'],
-      firstname: json['firstname'],
-      lastname: json['lastname'],
+      firstname: json['first_name'],
+      lastname: json['last_name'],
       email: json['email'],
       number: json['number'],
       password: json['password'],
       dateOfBirth: DateTime.parse(json['date_of_birth']),
-      dateOfRegistration: DateTime.parse(json['date_of_reg']),
+      dateOfRegistration: DateTime.parse(json['created_at']),
       isDeleted: json['isDeleted'] ?? false,
     );
   }

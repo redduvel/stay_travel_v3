@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:dio/io.dart';
@@ -50,41 +51,58 @@ class ApiService {
   }
 
   // Аутентификация пользователя
-  Future<User?> login(String emailOrNumber, String password) async {
+Future<User?> login(String emailOrNumber, String password) async {
     try {
       final response = await dio.post(
         '/auth/login',
         data: {'emailOrNumber': emailOrNumber, 'password': password},
       );
+
       // Сохранение токена
       if (response.data['token'] != null) {
         await LocalStorageService.saveToken(response.data['token']);
       }
-      
+
       User user = User.fromJson(response.data);
 
       return user;
+    } on DioException catch (e) {
+      if (e.response != null && (e.response?.statusCode == 400 || e.response?.statusCode == 401)) {
+        Logger.log('Ошибка авторизации: ${e.response?.data}', level: LogLevel.error);
+        throw 'Ошибка авторизации: ${e.response?.data['error'] ?? 'Неизвестная ошибка.'}';
+      } else {
+        Logger.log('Ошибка сети: $e', level: LogLevel.error);
+        throw 'Ошибка сети.';
+      }
     } catch (e) {
-      Logger.log('$e', level: LogLevel.error);
-      return null;
+      Logger.log('Неизвестная ошибка: $e', level: LogLevel.error);
+      throw 'Неизвестная ошибка.';
     }
   }
 
-  // Регистрация пользователя
   Future<User?> register(Map<String, dynamic> userData) async {
     try {
       final response = await dio.post('/auth/register', data: userData);
-      // Сохранение токена
+
       if (response.data['token'] != null) {
         await LocalStorageService.saveToken(response.data['token']);
+        Logger.log("Save token", level: LogLevel.info);
       }
 
       User user = User.fromJson(response.data['user']);
       
       return user;
+    } on DioException catch (e) {
+      if (e.response != null && (e.response?.statusCode == 400 || e.response?.statusCode == 401)) {
+        Logger.log('Ошибка регистрации: ${e.response?.data}', level: LogLevel.error);
+        throw Exception('Ошибка регистрации: ${e.response?.data['message'] ?? 'Неизвестная ошибка'}');
+      } else {
+        Logger.log('Ошибка сети: $e', level: LogLevel.error);
+        throw Exception('Ошибка сети: $e');
+      }
     } catch (e) {
-      Logger.log('$e', level: LogLevel.error);
-      return null;
+      Logger.log('Неизвестная ошибка: $e', level: LogLevel.error);
+      throw Exception('Неизвестная ошибка: $e');
     }
   }
 
@@ -99,12 +117,22 @@ class ApiService {
 
       final response = await dio.get('/hotels', queryParameters: {'page': skip, 'limit': limit});
       
-      return List<Hotel>.from(
-          response.data['hotels'].map((hotel) => Hotel.fromJson(hotel)));
+      switch (response.statusCode) {
+        case 200:
+          return List<Hotel>.from(
+            response.data['hotels'].map((hotel) => Hotel.fromJson(hotel)));
+        case 404:
+            Logger.log("Hotels not found");
+            return [];          
+      }
+
+      return [];
+
     } catch (e) {
       Logger.log('$e', level: LogLevel.error);
       return [];
     }
+    
   }
 
   // Получение конкретного отеля
@@ -115,6 +143,17 @@ class ApiService {
     } catch (e) {
       Logger.log('$e', level: LogLevel.error);
       return null;
+    }
+  }
+
+  Future<List<Hotel>> searchHotels(String query) async {
+    final response = await dio.get('/hotels/search?query=$query');
+
+    if (response.statusCode == 200) {
+      List<dynamic> jsonData = json.decode(response.data);
+      return jsonData.map((hotel) => Hotel.fromJson(hotel)).toList();
+    } else {
+      throw Exception('Failed to search hotels');
     }
   }
 

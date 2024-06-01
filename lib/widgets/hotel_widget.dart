@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:provider/provider.dart';
+import 'package:stay_travel_v3/controllers/features_controller.dart';
 import 'package:stay_travel_v3/themes/colors.dart';
 import 'package:stay_travel_v3/themes/text_styles.dart';
 import 'package:stay_travel_v3/utils/routes.dart';
@@ -54,19 +56,26 @@ class _HotelWidgetState extends State<HotelWidget> {
                     ),
                     margin: const EdgeInsets.symmetric(vertical: 5),
                   ),
-                  Row(
-                    children: List.generate(
-                      widget.hotel.features.length, 
-                      (index) {
-                        return Container(
-                          margin: const EdgeInsets.symmetric(horizontal: 2.5),
-                          child: Icon(
-                            widget.hotel.features[index].iconData,
-                            color: AppColors.grey2,
-                          ),
-                        );
-                      }
-                    ),
+                  Consumer<FeaturesController>(
+                    builder: (context, featureProvider, child) {
+                      return Row(
+                        children: List.generate(
+                          widget.hotel.features.length, 
+                          (index) {
+                            final feature = widget.hotel.features[index];
+                          final isSelected = featureProvider.selectedFeatures.any((selectedFeature) => selectedFeature.id == feature.id);
+
+                            return Container(
+                              margin: const EdgeInsets.symmetric(horizontal: 2.5),
+                              child: Icon(
+                                widget.hotel.features[index].iconData,
+                                color: isSelected ? AppColors.orange : AppColors.grey2,
+                              ),
+                            );
+                          }
+                        )
+                      );
+                    },
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,

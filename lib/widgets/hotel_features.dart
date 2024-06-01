@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 import 'package:skeletonizer/skeletonizer.dart';
+import 'package:stay_travel_v3/bloc/hotels/hotel_bloc.dart';
+import 'package:stay_travel_v3/bloc/hotels/hotel_event.dart';
 import 'package:stay_travel_v3/controllers/features_controller.dart';
 import 'package:stay_travel_v3/models/feature.dart';
 import 'package:stay_travel_v3/services/api_service.dart';
@@ -32,12 +35,11 @@ class _HotelFeaturesListState extends State<HotelFeaturesList> {
     return ChangeNotifierProvider(
       create: (_) => Provider.of<FeaturesController>(context, listen: false),
       child: SizedBox(
-        height: 150,
+        height: 100,
         child: SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           child: SizedBox(
-            width: (hotelFeatures.length / 3.ceil()) *
-                (MediaQuery.sizeOf(context).width * 0.5),
+            width: 1000,
             child: Row(
               children: [
                 Expanded(
@@ -70,8 +72,8 @@ class _HotelFeaturesListState extends State<HotelFeaturesList> {
                         return Consumer<FeaturesController>(
                           builder: (context, provider, child) {
                             // Разделяем выбранные и невыбранные функции
-                            final selectedFeatures = features.where((feature) => provider.isSelected(feature.name)).toList();
-                            final unselectedFeatures = features.where((feature) => !provider.isSelected(feature.name)).toList();
+                            final selectedFeatures = features.where((feature) => provider.isSelected(feature)).toList();
+                            final unselectedFeatures = features.where((feature) => !provider.isSelected(feature)).toList();
                             
                             return Wrap(
                               spacing: 5,
@@ -80,7 +82,8 @@ class _HotelFeaturesListState extends State<HotelFeaturesList> {
                                 ...selectedFeatures.map((feature) {
                                   return GestureDetector(
                                     onTap: () {
-                                      provider.toggleFeature(feature.name);
+                                      provider.toggleFeature(feature);
+                                      BlocProvider.of<HotelBloc>(context).add(FilterHotelsByFeature(provider.selectedFeatures));
                                     },
                                     child: Chip(
                                       avatar: Icon(
@@ -102,7 +105,8 @@ class _HotelFeaturesListState extends State<HotelFeaturesList> {
                                 ...unselectedFeatures.map((feature) {
                                   return GestureDetector(
                                     onTap: () {
-                                      provider.toggleFeature(feature.name);
+                                      provider.toggleFeature(feature);
+                                      BlocProvider.of<HotelBloc>(context).add(FilterHotelsByFeature(provider.selectedFeatures));
                                     },
                                     child: Chip(
                                       avatar: Icon(

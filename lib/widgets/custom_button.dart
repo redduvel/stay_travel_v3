@@ -3,9 +3,8 @@ import 'package:stay_travel_v3/themes/text_styles.dart';
 
 import '../themes/colors.dart';
 
-
 class CustomButton extends StatefulWidget {
-  final String text;
+  final String? text;
   final IconData? icon;
   final String? header;
   final VoidCallback? onPressed;
@@ -14,6 +13,7 @@ class CustomButton extends StatefulWidget {
   final double? height;
   final double? margin;
   final MainAxisAlignment? mainAxisAlignment;
+  final Widget? widget;
 
   // Конструктор для кнопки с иконкой и текстом
   const CustomButton.icon({
@@ -22,10 +22,12 @@ class CustomButton extends StatefulWidget {
     required this.icon,
     this.onPressed,
     this.backgroundColor,
-    this.width, 
-    this.height, 
-    this.margin, this.mainAxisAlignment,
-  })  : header = null;
+    this.width,
+    this.height,
+    this.margin,
+    this.mainAxisAlignment,
+  })  : header = null,
+        widget = null;
 
   // Конструктор для кнопки с иконкой, заголовком и текстом
   const CustomButton.header({
@@ -35,21 +37,38 @@ class CustomButton extends StatefulWidget {
     required this.icon,
     this.onPressed,
     this.backgroundColor,
-    this.width, 
-    this.height, 
-    this.margin, this.mainAxisAlignment,
-  });
+    this.width,
+    this.height,
+    this.margin,
+    this.mainAxisAlignment,
+  }) : widget = null;
 
   // Конструктор для обычной кнопки с текстом
-  const CustomButton.normal({
-    super.key,
-    required this.text,
-    this.onPressed,
-    this.backgroundColor,
-    this.width, this.height, 
-    this.margin, this.mainAxisAlignment
-  })  : icon = null,
-        header = null;
+  const CustomButton.normal(
+      {super.key,
+      required this.text,
+      this.onPressed,
+      this.backgroundColor,
+      this.width,
+      this.height,
+      this.margin,
+      this.mainAxisAlignment})
+      : icon = null,
+        header = null,
+        widget = null;
+
+  const CustomButton.load(
+      {super.key,
+      required this.widget,
+      this.onPressed,
+      this.backgroundColor,
+      this.width,
+      this.height,
+      this.margin,
+      this.mainAxisAlignment})
+      : icon = null,
+        header = null,
+        text = null;
 
   @override
   State<CustomButton> createState() => _CustomButtonState();
@@ -59,21 +78,19 @@ class _CustomButtonState extends State<CustomButton> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.symmetric(
-        horizontal: 0, 
-        vertical: widget.margin ?? 0
-      ),
+      margin: EdgeInsets.symmetric(horizontal: 0, vertical: widget.margin ?? 0),
       child: ElevatedButton(
         style: _style(
           widget.backgroundColor ?? AppColors.orange,
           widget.width ?? double.infinity,
-          widget.height ?? double.minPositive + (widget.header != null ? 15 : 0),
-          
+          widget.height ??
+              double.minPositive + (widget.header != null ? 15 : 0),
         ),
         onPressed: widget.onPressed,
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: widget.mainAxisAlignment ?? MainAxisAlignment.start,
+          mainAxisAlignment:
+              widget.mainAxisAlignment ?? MainAxisAlignment.start,
           children: _buildChildren(),
         ),
       ),
@@ -82,6 +99,15 @@ class _CustomButtonState extends State<CustomButton> {
 
   List<Widget> _buildChildren() {
     List<Widget> children = [];
+
+    if (widget.widget != null) {
+      children.add(
+        Center(
+          child: widget.widget,
+        )
+      );
+      return children;
+    }
 
     if (widget.icon != null) {
       children.add(
@@ -111,12 +137,11 @@ class _CustomButtonState extends State<CustomButton> {
             SizedBox(
               width: (widget.width! - 100),
               child: Text(
-                widget.text,
+                widget.text!,
                 style: const TextStyle(
                   color: Color(0xFF9095A1),
                   fontSize: 14,
                   fontWeight: FontWeight.normal,
-                  
                 ),
               ),
             ),
@@ -125,7 +150,11 @@ class _CustomButtonState extends State<CustomButton> {
       );
     } else {
       children.add(
-        Text(widget.text, style: AppTextStyles.titleTextStyle.copyWith(fontWeight: FontWeight.w500),),
+        Text(
+          widget.text!,
+          style: AppTextStyles.titleTextStyle
+              .copyWith(fontWeight: FontWeight.w500),
+        ),
       );
     }
 
@@ -133,12 +162,13 @@ class _CustomButtonState extends State<CustomButton> {
   }
 }
 
-
 ButtonStyle _style(Color backgroundColor, double width, double height) {
   return ButtonStyle(
     backgroundColor: WidgetStateProperty.all<Color>(backgroundColor),
-    foregroundColor: WidgetStateProperty.all<Color>(const Color.fromRGBO(23, 26, 31, 1)),
-    padding: WidgetStateProperty.all<EdgeInsets>(const EdgeInsets.symmetric(horizontal: 10, vertical: 5)),
+    foregroundColor:
+        WidgetStateProperty.all<Color>(const Color.fromRGBO(23, 26, 31, 1)),
+    padding: WidgetStateProperty.all<EdgeInsets>(
+        const EdgeInsets.symmetric(horizontal: 10, vertical: 5)),
     shape: WidgetStateProperty.all<OutlinedBorder>(
       const RoundedRectangleBorder(
         borderRadius: BorderRadius.all(Radius.circular(6)),
@@ -148,10 +178,9 @@ ButtonStyle _style(Color backgroundColor, double width, double height) {
       const Size(0, 40), // Значение минимальной ширины изменено на 0
     ),
     maximumSize: WidgetStateProperty.all<Size>(
-      const Size(double.infinity, double.infinity)
-    ),
+        const Size(double.infinity, double.infinity)),
     fixedSize: WidgetStateProperty.all<Size>(
-      Size(width, height), 
+      Size(width, height),
     ),
   );
 }

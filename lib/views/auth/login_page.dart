@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:stay_travel_v3/controllers/user_controller.dart';
-import 'package:stay_travel_v3/utils/logger.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:stay_travel_v3/bloc/auth/auth_bloc.dart';
+import 'package:stay_travel_v3/bloc/auth/auth_event.dart';
+import 'package:stay_travel_v3/bloc/auth/auth_state.dart';
 import 'package:stay_travel_v3/utils/routes.dart';
 
 import '../../themes/colors.dart';
@@ -19,90 +20,96 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final _emailOrNumberController = TextEditingController();
   final _passwordController = TextEditingController();
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 15),
-        child: CustomScrollView(
-          //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          slivers: [
-            const SliverToBoxAdapter(
-              child: SizedBox(height: 50)
-            ),
-            const SliverToBoxAdapter(
-              child: Column(
-                children: [
-                  Text(
-                    'Войти',
-                    style: AppTextStyles.headerStyle
+        child: BlocListener<AuthBloc, AuthState>(
+          listener: (context, state) {
+            if (state is AuthAuthenticated) {
+              Navigator.pushNamed(context, Routes.mainPage);
+            } else if (state is AuthError) {
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                content: Text(state.message),
+              ));
+            }
+          },
+          child: BlocBuilder<AuthBloc, AuthState>(
+            builder: (context, state) {
+              return CustomScrollView(
+                slivers: [
+                  const SliverToBoxAdapter(child: SizedBox(height: 50)),
+                  const SliverToBoxAdapter(
+                    child: Column(
+                      children: [
+                        Text('Войти', style: AppTextStyles.headerStyle),
+                        Text(
+                          'Войдите в свою учетную запись, указав номер телефона или адрес электронной почты.',
+                          textAlign: TextAlign.center,
+                          style: AppTextStyles.subheaderBoldStyle,
+                        ),
+                      ],
+                    ),
                   ),
-                  Text(
-                    'Войдите в свою учетную запись, указав номер телефона или адрес электронной почты.',
-                    textAlign: TextAlign.center,
-                    style: AppTextStyles.subheaderBoldStyle
+                  SliverToBoxAdapter(
+                    child: Column(
+                      children: [
+                        const Text(
+                          '',
+                          style: AppTextStyles.titleTextStyle,
+                        ),
+                        const SizedBox(height: 10),
+                        TextFormField(
+                          controller: _emailOrNumberController,
+                          decoration:
+                              textFieldDecoration('Номер телефона или почта'),
+                          textAlign: TextAlign.left,
+                          textAlignVertical: TextAlignVertical.center,
+                          maxLines: 1,
+                        ),
+                        const SizedBox(height: 15),
+                        TextFormField(
+                          controller: _passwordController,
+                          decoration: textFieldDecoration('Пароль'),
+                          textAlign: TextAlign.left,
+                          textAlignVertical: TextAlignVertical.center,
+                          obscureText: true,
+                          maxLines: 1,
+                        ),
+                        const SizedBox(height: 40),
+                        CustomButton.load(
+                          backgroundColor: AppColors.orange,
+                          width: 500,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          margin: 5,
+                          onPressed: () {
+                            final email = _emailOrNumberController.text;
+                            final password = _passwordController.text;
+                            context.read<AuthBloc>().add(LoginEvent(email, password));
+                          },
+                          widget: state is AuthLoading ? 
+                          const CircularProgressIndicator() : 
+                          Text("Войти", style: AppTextStyles.titleTextStyle.copyWith(fontWeight: FontWeight.w500),),
+                        ),
+                        CustomButton.normal(
+                          text: 'Назад',
+                          backgroundColor: AppColors.grey,
+                          width: 500,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          margin: 5,
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                        ),
+                      ],
+                    ),
                   ),
                 ],
-              ),
-            ),
-            SliverToBoxAdapter(
-              child: Column(
-                children: [
-                  const Text(
-                    '',
-                    style: AppTextStyles.titleTextStyle,
-                  ),
-                  const SizedBox(height: 10),
-                  TextFormField(
-                    controller: _emailOrNumberController,
-                    decoration: textFieldDecoration('Номер телефона или почта'),
-                    textAlign: TextAlign.left,
-                    textAlignVertical: TextAlignVertical.center,
-                    maxLines: 1,
-                  ),
-                  const SizedBox(height: 15),
-                  TextFormField(
-                    controller: _passwordController,
-                    decoration: textFieldDecoration('Пароль'),
-                    textAlign: TextAlign.left,
-                    textAlignVertical: TextAlignVertical.center,
-                    obscureText: true,
-                    maxLines: 1,
-                  ),
-                  const SizedBox(height: 40),
-                  CustomButton.normal(
-                    text: 'Войти',
-                    backgroundColor: AppColors.orange,
-                    width: 500,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    margin: 5,
-                    onPressed: () async {
-                      await context.read<AuthProvider>().login(
-                            _emailOrNumberController.text,
-                            _passwordController.text,
-                          );
-                      if (context.read<AuthProvider>().user != null) {
-                        Navigator.pushNamed(context, Routes.mainPage);
-                      } else {
-                        Logger.log("error login", level: LogLevel.error);
-                      }
-                    },
-                  ),
-                  CustomButton.normal(
-                    text: 'Назад',
-                    backgroundColor: AppColors.grey,
-                    width: 500,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    margin: 5,
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                  ),
-                ],
-              ),
-            ),
-          ],
+              );
+            },
+          ),
         ),
       ),
     );

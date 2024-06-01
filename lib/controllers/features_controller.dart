@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:stay_travel_v3/models/feature.dart';
 
 class FeaturesController with ChangeNotifier {
-  final List<String> _selectedFeatures = [];
+  final List<Feature> _selectedFeatures = [];
 
-  List<String> get selectedFeatures => _selectedFeatures;
+  List<Feature> get selectedFeatures => _selectedFeatures;
 
-  void toggleFeature(String feature) {
+  void toggleFeature(Feature feature) {
     if (_selectedFeatures.contains(feature)) {
       _selectedFeatures.remove(feature);
     } else {
@@ -14,7 +15,11 @@ class FeaturesController with ChangeNotifier {
     notifyListeners();
   }
 
-  bool isSelected(String feature) {
+  bool isSelected(Feature feature) {
     return _selectedFeatures.contains(feature);
+  }
+
+  List<Feature> getSelectedFeatures() {
+    return _selectedFeatures;
   }
 }
