@@ -12,6 +12,7 @@ class Hotel {
   final List<Feature> features;
   final bool isDeleted;
   final DateTime createdAt;
+  bool isFavorite;
 
   Hotel({
     required this.id,
@@ -23,7 +24,8 @@ class Hotel {
     required this.reviews,
     this.isDeleted = false,
     required this.createdAt,
-    required this.features
+    required this.features,
+    this.isFavorite = false
   });
 
   factory Hotel.fromJson(Map<String, dynamic> json) {

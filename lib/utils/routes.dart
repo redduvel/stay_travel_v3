@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:stay_travel_v3/models/hotel.dart';
 import 'package:stay_travel_v3/views/auth/login_page.dart';
 import 'package:stay_travel_v3/views/auth/registration_page.dart';
+import 'package:stay_travel_v3/views/booking/create_booking_page.dart';
 import 'package:stay_travel_v3/views/hotel/hotel_page.dart';
 import 'package:stay_travel_v3/views/main/main_page.dart';
 import 'package:stay_travel_v3/views/start_page.dart';
@@ -45,6 +47,11 @@ class AppRoutes {
       case Routes.mainPage:
         return MaterialPageRoute(builder: (context) {
           return MainPage();
+        });
+      case Routes.bookingPage:
+        return MaterialPageRoute(builder: (context) {
+          final hotel = settings.arguments as Hotel;
+          return CreateBookingPage(hotel: hotel);
         });
       default:
         return MaterialPageRoute(

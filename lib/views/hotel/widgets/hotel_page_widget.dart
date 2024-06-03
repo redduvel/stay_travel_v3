@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:stay_travel_v3/models/hotel.dart';
 import 'package:stay_travel_v3/themes/colors.dart';
 import 'package:stay_travel_v3/themes/text_styles.dart';
+import 'package:stay_travel_v3/utils/fake_data.dart';
 
 class HotelPageWidget extends StatefulWidget {
   final Hotel hotel;
@@ -20,123 +21,145 @@ class _HotelPageWidgetState extends State<HotelPageWidget> {
         SliverToBoxAdapter(
           child: ClipRRect(
             borderRadius: const BorderRadius.all(Radius.circular(12)),
-            child: Image.network(
-                'https://mykaleidoscope.ru/x/uploads/posts/2022-09/1663154968_6-mykaleidoscope-ru-p-buenos-aires-argentina-krasivo-6.jpg'),
+            child: Image.network(FakeData.fakeImage),
           ),
         ),
         SliverToBoxAdapter(
           child: Text(
             widget.hotel.name,
-            style: AppTextStyles.headerStyle.copyWith(fontSize: 20),
-            textAlign: TextAlign.center,
+            style: AppTextStyles.headerStyle.copyWith(fontSize: 26),
+            textAlign: TextAlign.left,
           ),
         ),
         SliverToBoxAdapter(
           child: Text(
             widget.hotel.address,
-            style: AppTextStyles.bodyTextStyle.copyWith(fontSize: 16),
-            textAlign: TextAlign.center,
+            style: AppTextStyles.bodyTextStyle.copyWith(fontSize: 18),
+            textAlign: TextAlign.left,
           ),
         ),
         const SliverToBoxAdapter(child: SizedBox(height: 5)),
         SliverToBoxAdapter(
-            child: Column(
-          children: [
+          child: Column(
+            children: [
+              Card(
+                child: Container(
+                  padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                  width: double.infinity,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Описание',
+                        style:  AppTextStyles.headerStyle.copyWith(fontSize: 20)
+                      ),
+                      Text(
+                        widget.hotel.description,
+                        style: AppTextStyles.bodyTextStyle.copyWith(fontSize: 16)
+                      ),
+                    ],
+                  )
+                ),
+              ),
+            const SizedBox(height: 5),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Container(
-                  decoration: BoxDecoration(
-                      border: Border.all(color: AppColors.grey3, width: 1),
-                      borderRadius:
-                          const BorderRadius.all(Radius.circular(10))),
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-                  width: 150,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        '4.5',
-                        style: AppTextStyles.headerStyle,
-                      ),
-                      Text(
-                        'rating',
-                        style:
-                            AppTextStyles.bodyTextStyle.copyWith(fontSize: 18),
-                      )
-                    ],
+                Card(
+                  child: Container(
+                    padding:
+                        const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                    width: 150,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          '4.5',
+                          style: AppTextStyles.headerStyle
+                              .copyWith(color: AppColors.orange2),
+                        ),
+                        Text(
+                          'Рейтинг',
+                          style: AppTextStyles.bodyTextStyle
+                              .copyWith(fontSize: 18),
+                        )
+                      ],
+                    ),
                   ),
                 ),
-                Container(
-                  decoration: BoxDecoration(
-                      border: Border.all(color: AppColors.grey3, width: 1),
-                      borderRadius:
-                          const BorderRadius.all(Radius.circular(10))),
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-                  width: 200,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        '8.6K',
-                        style: AppTextStyles.headerStyle,
-                      ),
-                      Text(
-                        'people rated',
-                        style:
-                            AppTextStyles.bodyTextStyle.copyWith(fontSize: 18),
-                      )
-                    ],
+                Card(
+                  child: Container(
+                    padding:
+                        const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                    width: 200,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          '8.6K',
+                          style: AppTextStyles.headerStyle
+                              .copyWith(color: AppColors.orange2),
+                        ),
+                        Text(
+                          'Посетили',
+                          style: AppTextStyles.bodyTextStyle
+                              .copyWith(fontSize: 18),
+                        )
+                      ],
+                    ),
                   ),
                 )
               ],
             ),
             const SizedBox(height: 5),
-            Container(
-              decoration: BoxDecoration(
-                  border: Border.all(color: AppColors.grey3, width: 1),
-                  borderRadius: const BorderRadius.all(Radius.circular(10))),
-              padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-              width: double.infinity,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    '2.3K',
-                    style: AppTextStyles.headerStyle,
-                  ),
-                  Text(
-                    'people saved',
-                    style: AppTextStyles.bodyTextStyle.copyWith(fontSize: 18),
-                  )
-                ],
+            Card(
+              child: Container(
+                width: double.infinity,
+                padding:
+                    const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      '2.3K',
+                      style: AppTextStyles.headerStyle
+                          .copyWith(color: AppColors.orange2),
+                    ),
+                    Text(
+                      'Добавили в избранное',
+                      style: AppTextStyles.bodyTextStyle.copyWith(fontSize: 18),
+                    )
+                  ],
+                ),
               ),
             ),
             const SizedBox(height: 5),
-            Container(
-              decoration: BoxDecoration(
-                  border: Border.all(color: AppColors.grey3, width: 1),
-                  borderRadius: const BorderRadius.all(Radius.circular(10))),
-              padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-              width: double.infinity,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Row(
-                    children: [
-                      Icon(Icons.abc),
-                      Icon(Icons.abc),
-                      Icon(Icons.abc),
-                      Icon(Icons.abc),
-                    ],
-                  ),
-                  Text(
-                    'hotel features',
-                    style: AppTextStyles.bodyTextStyle.copyWith(fontSize: 18),
-                  )
-                ],
+            Card(
+              child: Container(
+                padding:
+                    const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                width: double.infinity,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                        children: List.generate(widget.hotel.features.length,
+                            (index) {
+                      return Container(
+                        margin: const EdgeInsets.symmetric(horizontal: 2.5),
+                        child: Icon(
+                          widget.hotel.features[index].iconData,
+                          color: AppColors.orange2,
+                        ),
+                      );
+                    })),
+                    const SizedBox(height: 5),
+                    Text(
+                      'Особенности',
+                      style: AppTextStyles.bodyTextStyle.copyWith(fontSize: 18),
+                    )
+                  ],
+                ),
               ),
             ),
           ],
@@ -160,12 +183,12 @@ class _HotelPageWidgetState extends State<HotelPageWidget> {
                   itemBuilder: (context, index) {
                     return ClipRRect(
                         borderRadius:
-                            const BorderRadius.all(Radius.circular(15)),
+                            const BorderRadius.all(Radius.circular(20)),
                         child: SizedBox(
                           width: 300,
                           child: Image.network(
-                              'https://mykaleidoscope.ru/x/uploads/posts/2022-09/1663154968_6-mykaleidoscope-ru-p-buenos-aires-argentina-krasivo-6.jpg',
-                                                ),
+                            FakeData.fakeImage,
+                          ),
                         ));
                   },
                   separatorBuilder: (context, index) =>

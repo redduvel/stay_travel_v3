@@ -1,9 +1,13 @@
 // Hotel Page
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:stay_travel_v3/bloc/hotels/hotels_bloc.dart';
+import 'package:stay_travel_v3/bloc/hotels/hotels_event.dart';
+import 'package:stay_travel_v3/bloc/hotels/hotels_state.dart';
 import 'package:stay_travel_v3/models/hotel.dart';
-import 'package:stay_travel_v3/services/api_service.dart';
+import 'package:stay_travel_v3/services/local_storage_service.dart';
 import 'package:stay_travel_v3/themes/text_styles.dart';
-import 'package:stay_travel_v3/utils/logger.dart';
+import 'package:stay_travel_v3/utils/routes.dart';
 import 'package:stay_travel_v3/views/hotel/widgets/hotel_page_skeleton.dart';
 import 'package:stay_travel_v3/views/hotel/widgets/hotel_page_widget.dart';
 import 'package:stay_travel_v3/widgets/custom_button.dart';
@@ -17,25 +21,13 @@ class HotelPage extends StatefulWidget {
 }
 
 class _HotelPageState extends State<HotelPage> {
-  Hotel? hotel;
-  bool isLoading = true;
+  late Hotel hotel;
 
   @override
   void initState() {
+    BlocProvider.of<HotelsBloc>(context)
+        .add(FetchHotel(hotelId: widget.hotelId));
     super.initState();
-    fetchHotel(widget.hotelId);
-  }
-
-  Future<Hotel?> fetchHotel(String hotelId) async {
-    try {
-      hotel = await ApiService.instance.fetchHotelById(hotelId);
-      return hotel;
-    } catch (e) {
-      Logger.log(e.toString(), level: LogLevel.error);
-    } finally {
-      isLoading = false;
-    }
-    return null;
   }
 
   @override
@@ -49,27 +41,46 @@ class _HotelPageState extends State<HotelPage> {
         centerTitle: true,
       ),
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 15),
-        child: FutureBuilder<Hotel?>(
-            future: fetchHotel(widget.hotelId),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return HotelPageSkeleton(isLoading: isLoading);
-              } else if (snapshot.hasError || !snapshot.hasData) {
-                return const Center(
-                    child: Text('Упс... кажется ошибка на сервере'));
-              } else {
-                final hotel = snapshot.data!;
-                return HotelPageWidget(hotel: hotel);
+        padding: const EdgeInsets.symmetric(horizontal: 7.5),
+        child: BlocListener<HotelsBloc, HotelsState>(
+          listener: (context, state) {
+            if (state is HotelError) {
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                content: Text(state.message),
+              ));
+            }
+          },
+          child: BlocBuilder<HotelsBloc, HotelsState>(
+            builder: (context, state) {
+              if (state is HotelLoading) {
+                return const HotelPageSkeleton();
               }
-            }),
+
+              if (state is HotelLoaded) {
+                hotel = state.hotel;
+                return HotelPageWidget(hotel: state.hotel);
+              }
+
+              return Container();
+            },
+          ),
+        ),
       ),
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 25),
         child: CustomButton.normal(
           text: 'Посетить',
           mainAxisAlignment: MainAxisAlignment.center,
-          onPressed: () {},
+          onPressed: () {
+            if (LocalStorageService.getToken() == '') {
+              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                content: Text('Сначала нужно авторизоваться.'),
+              ));
+              return;
+            }
+
+            Navigator.pushNamed(context, Routes.bookingPage, arguments: hotel);
+          },
         ),
       ),
     );

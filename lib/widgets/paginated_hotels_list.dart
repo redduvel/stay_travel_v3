@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:stay_travel_v3/bloc/hotels/hotel_bloc.dart';
-import 'package:stay_travel_v3/bloc/hotels/hotel_state.dart';
+import 'package:stay_travel_v3/bloc/hotels/hotels_bloc.dart';
+import 'package:stay_travel_v3/bloc/hotels/hotels_state.dart';
 import 'package:stay_travel_v3/widgets/hotel_widget.dart';
 
 class PaginatedHotelList extends StatefulWidget {
@@ -22,9 +22,9 @@ class _PaginatedHotelListState extends State<PaginatedHotelList> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<HotelBloc, HotelState>(
+    return BlocBuilder<HotelsBloc, HotelsState>(
       builder: (context, state) {
-        if (state is HotelLoading) {
+        if (state is HotelsLoading) {
           return CustomScrollView(
             controller: widget.scrollController,
             slivers: const [
@@ -33,7 +33,7 @@ class _PaginatedHotelListState extends State<PaginatedHotelList> {
               ),
             ],
           );
-        } else if (state is HotelLoaded) {
+        } else if (state is HotelsLoaded) {
           return CustomScrollView(
             controller: widget.scrollController,
             slivers: [
@@ -47,7 +47,7 @@ class _PaginatedHotelListState extends State<PaginatedHotelList> {
               ),
             ],
           );
-        } else if (state is HotelError) {
+        } else if (state is HotelsError) {
           return CustomScrollView(
             controller: widget.scrollController,
             slivers: const [

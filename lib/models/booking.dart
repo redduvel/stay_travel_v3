@@ -1,7 +1,9 @@
 class Booking {
-  final String id;
+  final String? id;
   final String userId;
   final String hotelId;
+  final String? hotelName;
+  final String? hotelAddress;
   final DateTime createdAt;
   final DateTime startDate;
   final DateTime endDate;
@@ -10,7 +12,7 @@ class Booking {
   final bool isDeleted;
 
   Booking({
-    required this.id,
+    this.id,
     required this.userId,
     required this.hotelId,
     required this.createdAt,
@@ -19,6 +21,8 @@ class Booking {
     required this.description,
     required this.status,
     this.isDeleted = false,
+    this.hotelName,
+    this.hotelAddress
   });
 
   factory Booking.fromJson(Map<String, dynamic> json) {
@@ -26,7 +30,9 @@ class Booking {
       id: json['id'],
       userId: json['user_id'],
       hotelId: json['hotel_id'],
-      createdAt: DateTime.parse(json['createAt']),
+      hotelName: json['hotel_name'],
+      hotelAddress: json['hotel_address'],
+      createdAt: DateTime.parse(json['created_at']),
       startDate: DateTime.parse(json['start_date']),
       endDate: DateTime.parse(json['end_date']),
       description: json['description'],

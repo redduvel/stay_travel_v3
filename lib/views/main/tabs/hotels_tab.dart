@@ -2,12 +2,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:skeletonizer/skeletonizer.dart';
-import 'package:stay_travel_v3/bloc/hotels/hotel_bloc.dart';
-import 'package:stay_travel_v3/bloc/hotels/hotel_event.dart';
-import 'package:stay_travel_v3/bloc/hotels/hotel_state.dart';
+import 'package:stay_travel_v3/bloc/hotels/hotels_bloc.dart';
+import 'package:stay_travel_v3/bloc/hotels/hotels_event.dart';
+import 'package:stay_travel_v3/bloc/hotels/hotels_state.dart';
 import 'package:stay_travel_v3/models/hotel.dart';
 import 'package:stay_travel_v3/themes/colors.dart';
 import 'package:stay_travel_v3/themes/text_styles.dart';
+import 'package:stay_travel_v3/utils/fake_data.dart';
 import 'package:stay_travel_v3/utils/static_functions.dart';
 import 'package:stay_travel_v3/widgets/hotel_features.dart';
 import 'package:stay_travel_v3/widgets/hotel_widget.dart';
@@ -28,11 +29,14 @@ class _HotelsTabState extends State<HotelsTab> {
 
   @override
   void initState() {
+    if (context.read<HotelsBloc>().state is HotelsInitial) {
+      BlocProvider.of<HotelsBloc>(context).add(FetchHotels(page: currentPage, limit: limit));
+    }
+
     super.initState();
     _scrollController = ScrollController();
     _scrollController.addListener(_onScroll);
-    BlocProvider.of<HotelBloc>(context)
-        .add(FetchHotels(page: currentPage, limit: limit)); // Добавлено
+
   }
 
   @override
@@ -47,7 +51,7 @@ class _HotelsTabState extends State<HotelsTab> {
       setState(() {
         isLoadingMore = true;
       });
-      BlocProvider.of<HotelBloc>(context)
+      BlocProvider.of<HotelsBloc>(context)
           .add(FetchMoreHotels(page: ++currentPage, limit: limit));
     }
   }
@@ -76,75 +80,84 @@ class _HotelsTabState extends State<HotelsTab> {
                 child: HotelFeaturesList())),
       ),
       body: Padding(
-          padding: const EdgeInsets.all(16),
-          child: BlocBuilder<HotelBloc, HotelState>(
+          padding: const EdgeInsets.symmetric(vertical: 16),
+          child: BlocBuilder<HotelsBloc, HotelsState>(
             builder: (context, state) {
-              if (state is HotelLoading) {
+              if (state is HotelsLoading) {
                 return CustomScrollView(
                   scrollDirection: Axis.vertical,
                   slivers: [
                     const SliverToBoxAdapter(
                       child: Skeletonizer(
-                        child: Text(
-                          'Популярные отели',
-                          style: AppTextStyles.subheaderBoldStyle,
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 7.5),
+                          child: Text(
+                            'Популярные отели',
+                            style: AppTextStyles.subheaderBoldStyle,
+                          ),
                         ),
                       ),
                     ),
-                    SliverToBoxAdapter(
-                      child: Skeletonizer(
-                          child: HotelWidget(
-                              hotel: Hotel(
-                                  id: "id",
-                                  name: "name",
-                                  description: "description",
-                                  address: "address",
-                                  averageRating: null,
-                                  images: [],
-                                  reviews: [],
-                                  createdAt: DateTime.now(),
-                                  features: []))),
+                    SliverList(
+                      delegate: SliverChildBuilderDelegate((context, index) {
+                        final List<Hotel> fakeHotels =
+                            List.filled(5, FakeData.fakeHotel);
+
+                        return Skeletonizer(
+                            child: HotelWidget(
+                          hotel: fakeHotels[index],
+                        ));
+                      }),
                     )
                   ],
                 );
-              } else if (state is HotelError) {
+              } else if (state is HotelsError) {
                 return const Center(child: Text('Ошибка загрузки отелей'));
-              } else if (state is HotelLoaded) {
-                return CustomScrollView(
-                  scrollDirection: Axis.vertical,
-                  controller: _scrollController,
-                  slivers: [
-                    const SliverToBoxAdapter(
-                      child: Text(
-                        'Популярные отели',
-                        style: AppTextStyles.subheaderBoldStyle,
+              } else if (state is HotelsLoaded) {
+                return RefreshIndicator(
+                  onRefresh: () async {
+                    BlocProvider.of<HotelsBloc>(context)
+                      .add(FetchHotels(page: currentPage, limit: limit));
+                  },
+                  child: CustomScrollView(
+                    scrollDirection: Axis.vertical,
+                    controller: _scrollController,
+                    slivers: [
+                      const SliverToBoxAdapter(
+                        child: Padding(
+                          padding: EdgeInsets.all(7.5),
+                          child: Text(
+                            'Популярные отели',
+                            style: AppTextStyles.subheaderBoldStyle,
+                          ),
+                        ),
                       ),
-                    ),
-                    SliverList(
-                      delegate: SliverChildBuilderDelegate(
-                        (BuildContext context, int index) {
-                          return HotelWidget(hotel: state.hotels[index]);
-                        },
-                        childCount: state.hotels.length,
+                      SliverList(
+                        delegate: SliverChildBuilderDelegate(
+                          (BuildContext context, int index) {
+                            return HotelWidget(hotel: state.hotels[index]);
+                          },
+                          childCount: state.hotels.length,
+                        ),
                       ),
-                    ),
-                    SliverToBoxAdapter(
-                      child: isLoadingMore
-                          ? Skeletonizer(
-                              child: HotelWidget(
-                                  hotel: Hotel(
-                                      id: "id",
-                                      name: "name",
-                                      description: "description",
-                                      address: "address",
-                                      averageRating: null,
-                                      images: [],
-                                      reviews: [],
-                                      createdAt: DateTime.now(),
-                                      features: [])))
-                          : const SizedBox.shrink(),
-                    ),
-                  ],
+                      SliverToBoxAdapter(
+                        child: isLoadingMore
+                            ? Skeletonizer(
+                                child: HotelWidget(
+                                    hotel: Hotel(
+                                        id: "id",
+                                        name: "name",
+                                        description: "description",
+                                        address: "address",
+                                        averageRating: null,
+                                        images: [],
+                                        reviews: [],
+                                        createdAt: DateTime.now(),
+                                        features: [])))
+                            : const SizedBox.shrink(),
+                      ),
+                    ],
+                  ),
                 );
               } else {
                 return const Center(child: Text('Нет доступных отелей.'));

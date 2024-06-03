@@ -1,34 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:stay_travel_v3/models/hotel.dart';
-import 'package:stay_travel_v3/themes/colors.dart';
-import 'package:stay_travel_v3/themes/text_styles.dart';
+import 'package:stay_travel_v3/utils/fake_data.dart';
 
 class HotelPageSkeleton extends StatefulWidget {
-  final bool isLoading;
-  final Hotel hotel = Hotel(
-    id: "id", 
-    name: "Hotel name", 
-    description: "Hotel description", 
-    address: "Hotel address", 
-    averageRating: null, 
-    images: [], 
-    reviews: [], 
-    createdAt: DateTime.now(), 
-    features: []
-  );
-  
-  HotelPageSkeleton({super.key, required this.isLoading});
+  const HotelPageSkeleton({super.key});
 
   @override
   State<HotelPageSkeleton> createState() => _HotelPageSkeletonState();
 }
 
 class _HotelPageSkeletonState extends State<HotelPageSkeleton> {
+  Hotel hotel = FakeData.fakeHotel;
+
   @override
   Widget build(BuildContext context) {
     return Skeletonizer(
-      enabled: widget.isLoading,
       child: CustomScrollView(
         slivers: [
           SliverToBoxAdapter(
@@ -38,17 +25,15 @@ class _HotelPageSkeletonState extends State<HotelPageSkeleton> {
                   'https://mykaleidoscope.ru/x/uploads/posts/2022-09/1663154968_6-mykaleidoscope-ru-p-buenos-aires-argentina-krasivo-6.jpg'),
             ),
           ),
-          SliverToBoxAdapter(
+           SliverToBoxAdapter(
             child: Text(
-              widget.hotel.name,
-              style: AppTextStyles.headerStyle.copyWith(fontSize: 20),
+              hotel.name,
               textAlign: TextAlign.center,
             ),
           ),
-          SliverToBoxAdapter(
+           SliverToBoxAdapter(
             child: Text(
-              widget.hotel.address,
-              style: AppTextStyles.bodyTextStyle.copyWith(fontSize: 16),
+              hotel.address,
               textAlign: TextAlign.center,
             ),
           ),
@@ -58,79 +43,78 @@ class _HotelPageSkeletonState extends State<HotelPageSkeleton> {
           SliverToBoxAdapter(
             child: Column(
               children: [
+                Card(
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                    width: double.infinity,
+                    child: Text(hotel.description)
+                  ),
+                ),
+                const SizedBox(height: 5),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Container(
-                      decoration: BoxDecoration(
-                        border: Border.all(color: AppColors.grey3, width: 1),
-                        borderRadius: const BorderRadius.all(Radius.circular(10))
-                      ),
-                      padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-                      width: 150,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text('4.5', style: AppTextStyles.headerStyle,),
-                          Text('rating', style: AppTextStyles.bodyTextStyle.copyWith(fontSize: 18),)
-                        ],
+                    Card(
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                        width: 150,
+                        child: const Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text('4.5'),
+                            Text('rating')
+                          ],
+                        ),
                       ),
                     ),
-                    Container(
-                      decoration: BoxDecoration(
-                        border: Border.all(color: AppColors.grey3, width: 1),
-                        borderRadius: const BorderRadius.all(Radius.circular(10))
-                      ),
-                      padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-                      width: 200,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text('8.6K', style: AppTextStyles.headerStyle,),
-                          Text('people rated', style: AppTextStyles.bodyTextStyle.copyWith(fontSize: 18),)
-                        ],
+                    Card(
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                        width: 200,
+                        child: const Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text('8.6K'),
+                            Text('people rated')
+                          ],
+                        ),
                       ),
                     )
                   ],
                 ),
                 const SizedBox(height: 5),
-                Container(
-                  decoration: BoxDecoration(
-                    border: Border.all(color: AppColors.grey3, width: 1),
-                    borderRadius: const BorderRadius.all(Radius.circular(10))
-                  ),
-                  padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-                  width: double.infinity,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text('2.3K', style: AppTextStyles.headerStyle,),
-                      Text('people saved', style: AppTextStyles.bodyTextStyle.copyWith(fontSize: 18),)
-                    ],
+                Card(
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                    width: double.infinity,
+                    child: const Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('2.3K'),
+                        Text('people saved')
+                      ],
+                    ),
                   ),
                 ),
                 const SizedBox(height: 5),
-                Container(
-                  decoration: BoxDecoration(
-                    border: Border.all(color: AppColors.grey3, width: 1),
-                    borderRadius: const BorderRadius.all(Radius.circular(10))
-                  ),
-                  padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-                  width: double.infinity,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Row(
-                        children: [
-                          Icon(Icons.abc),
-                          Icon(Icons.abc),
-                          Icon(Icons.abc),
-                          Icon(Icons.abc),
-      
-                        ],
-                      ),
-                      Text('hotel features', style: AppTextStyles.bodyTextStyle.copyWith(fontSize: 18),)
-                    ],
+                Card(
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                    width: double.infinity,
+                    child: const Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Icon(Icons.abc),
+                            Icon(Icons.abc),
+                            Icon(Icons.abc),
+                            Icon(Icons.abc),
+                          ],
+                        ),
+                        Text('hotel features')
+                      ],
+                    ),
                   ),
                 ),
               ],
@@ -140,7 +124,7 @@ class _HotelPageSkeletonState extends State<HotelPageSkeleton> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Фотографии', style: AppTextStyles.headerStyle.copyWith(fontSize: 22, fontWeight: FontWeight.w500), textAlign: TextAlign.left,),
+                const Text('Фотографии', textAlign: TextAlign.left,),
                 SizedBox(
                   height: 400,
                   child: ListView(

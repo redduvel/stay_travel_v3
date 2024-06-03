@@ -27,3 +27,5 @@ class RegisterEvent extends AuthEvent {
   @override
   List<Object> get props => [emailOrNumber, password, fullname];
 }
+
+class CheckAuthEvent extends AuthEvent {}

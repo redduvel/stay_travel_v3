@@ -1,6 +1,14 @@
 // Bookings Tab
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:skeletonizer/skeletonizer.dart';
+import 'package:stay_travel_v3/bloc/booking/booking_bloc.dart';
+import 'package:stay_travel_v3/bloc/booking/booking_event.dart';
+import 'package:stay_travel_v3/bloc/booking/booking_state.dart';
+import 'package:stay_travel_v3/models/booking.dart';
+import 'package:stay_travel_v3/models/booking_status.dart';
 import 'package:stay_travel_v3/themes/colors.dart';
+import 'package:stay_travel_v3/widgets/booking_widget.dart';
 
 class BookingsTab extends StatefulWidget {
   const BookingsTab({super.key});
@@ -10,79 +18,111 @@ class BookingsTab extends StatefulWidget {
 }
 
 class _BookingsTabState extends State<BookingsTab> {
+  @override
+  void initState() {
+    if ((context.read<BookingBloc>().state is BookingLoaded) == false) {
+      context.read<BookingBloc>().add(FetchUserBookings());
+    }
 
-  List<String> bookingStatuses = [
-    'Активные',
-    'В ожидании',
-    'Неодобренные',
-    'Завершенные'
-  ];
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Ваши бронирования'),
-        automaticallyImplyLeading: false,
-        surfaceTintColor: Colors.white,
-        actions: [
-          IconButton(onPressed: () {}, icon: const Icon(Icons.history))
-        ],
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: CustomScrollView(
-          scrollDirection: Axis.vertical,
-          slivers: [
-            SliverToBoxAdapter(
-              child: SizedBox(
-                height: 150,
+        appBar: AppBar(
+          title: const Text('Ваши бронирования'),
+          automaticallyImplyLeading: false,
+          surfaceTintColor: Colors.white,
+          actions: [
+            IconButton(onPressed: () {}, icon: const Icon(Icons.history))
+          ],
+          bottom: PreferredSize(
+              preferredSize: const Size(double.infinity, 60),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
-                  child: SizedBox(
-                    width: (bookingStatuses.length / 3.ceil()) * (MediaQuery.sizeOf(context).width * 0.5),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Wrap(
-                            spacing: 5,
-                            children: List.generate(
-                              bookingStatuses.length,
-                              (index) => Chip(
-                                label: Text(bookingStatuses[index]),
-                                backgroundColor: AppColors.grey,
-                                shape: null,
+                  child: Row(
+                    children: List.generate(
+                        BookingStatus.bookingStatuses.length,
+                        (index) => GestureDetector(
+                              onTap: () {},
+                              child: Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 2.5),
+                                child: Chip(
+                                  label: Text(
+                                    BookingStatus.bookingStatuses[index].UIName,
+                                    style: const TextStyle(
+                                      color: AppColors.black,
+                                    ),
+                                  ),
+                                  backgroundColor: AppColors.grey,
+                                  side: BorderSide.none,
+                                ),
                               ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
+                            )),
                   ),
                 ),
-              ),
-            ),
-            SliverToBoxAdapter(
-              child: Wrap(
-                direction: Axis.horizontal,
-                spacing: 3,
-                runSpacing: 5,
-                children: List.generate(
-                  5, 
-                  (index) => Container(
-                    width: double.infinity, 
-                    height: 150, 
-                    decoration: const BoxDecoration(
-                      color: AppColors.grey3,
-                      borderRadius: BorderRadius.all(Radius.circular(12))
-                    ), 
-                  )
-                ),
-              ),
-            )
-          ],
+              )),
         ),
-      ),
-    );
+        body: Padding(
+            padding: const EdgeInsets.all(16),
+            child: BlocBuilder<BookingBloc, BookingState>(
+                builder: (context, state) {
+              if (state is BookingLoading) {
+                return CustomScrollView(
+                  scrollDirection: Axis.vertical,
+                  slivers: [
+                    SliverList(
+                        delegate: SliverChildBuilderDelegate((context, index) {
+                      return Skeletonizer(
+                        child: BookingWidget(
+                            booking: Booking(
+                                userId: "userId",
+                                hotelId: "hotelId",
+                                createdAt: DateTime.now(),
+                                startDate: DateTime.now(),
+                                endDate: DateTime.now(),
+                                description: "description",
+                                status: "test",
+                                hotelName: "Hotel name",
+                                hotelAddress: "Hotel address")),
+                      );
+                    }, childCount: 5))
+                  ],
+                );
+              }
+
+              if (state is BookingLoaded) {
+                if (state.bookings.isEmpty) {
+                  return const Center(
+                    child: Text('Здесь появятся Ваши бронированния'),
+                  );
+                } else {
+                  return CustomScrollView(
+                      scrollDirection: Axis.vertical,
+                      slivers: [
+                        SliverList(
+                          delegate: SliverChildBuilderDelegate((context, index) {
+                            return BookingWidget(booking: state.bookings[index]);
+                          },
+                          childCount: state.bookings.length
+                      )
+                    )
+                  ]
+                );
+              }
+            }
+
+              if (state is BookingError) {
+                return Center(
+                  child: Text(state.message),
+                );
+              }
+
+              return Container();
+            })));
   }
 }

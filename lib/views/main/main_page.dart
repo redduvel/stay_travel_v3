@@ -1,5 +1,9 @@
 // Main Page  
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:stay_travel_v3/bloc/auth/auth_bloc.dart';
+import 'package:stay_travel_v3/bloc/auth/auth_event.dart';
+import 'package:stay_travel_v3/bloc/auth/auth_state.dart';
 import 'package:stay_travel_v3/services/local_storage_service.dart';
 import 'package:stay_travel_v3/themes/colors.dart';
 import 'package:stay_travel_v3/themes/text_styles.dart';
@@ -49,40 +53,76 @@ class _MainPageState extends State<MainPage> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    if (context.read<AuthBloc>().state is AuthAuthenticated) {
+      return;
+    } else {
+      context.read<AuthBloc>().add(CheckAuthEvent());
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: _children[_currentIndex],
-      bottomNavigationBar: BottomNavigationBar(
-        selectedLabelStyle: AppTextStyles.bodyTextStyle,
-        unselectedLabelStyle: AppTextStyles.bodyTextStyle,
-        selectedItemColor: AppColors.orange2,
-        unselectedItemColor: AppColors.grey2,
-        showSelectedLabels: true,
-        showUnselectedLabels: true,
-        onTap: onTabTapped,
-        currentIndex: _currentIndex,
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.book),
-            label: 'Бронирования',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.favorite),
-            label: 'Избранное',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.hotel),
-            label: 'Отели',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.notifications),
-            label: 'Уведомления',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Профиль',
-          ),
-        ],
+    final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
+
+    return ScaffoldMessenger(
+      key: scaffoldMessengerKey,
+      child: Scaffold(
+        body: BlocListener<AuthBloc, AuthState>(
+          listener: (context, state) {
+
+            scaffoldMessengerKey.currentState?.clearSnackBars(); // Очистка существующих SnackBars
+            if (state is AuthLoading) {
+              scaffoldMessengerKey.currentState?.showSnackBar(const SnackBar(
+                content: Text('Проверка сохраненной сессии...'),
+              ));
+            }
+            if (state is AuthAuthenticated) {
+              scaffoldMessengerKey.currentState?.showSnackBar(SnackBar(
+                content: Text('С возвращением, ${state.user.firstname}!'),
+              ));
+            }
+            if (state is AuthError) {
+              scaffoldMessengerKey.currentState?.showSnackBar(SnackBar(
+                content: Text(state.message),
+              ));
+            }
+          },
+          child: _children[_currentIndex]
+        ),
+        bottomNavigationBar: BottomNavigationBar(
+          selectedLabelStyle: AppTextStyles.bodyTextStyle,
+          unselectedLabelStyle: AppTextStyles.bodyTextStyle,
+          selectedItemColor: AppColors.orange2,
+          unselectedItemColor: AppColors.grey2,
+          showSelectedLabels: true,
+          showUnselectedLabels: true,
+          onTap: onTabTapped,
+          currentIndex: _currentIndex,
+          items: const [
+            BottomNavigationBarItem(
+              icon: Icon(Icons.book),
+              label: 'Бронирования',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.favorite),
+              label: 'Избранное',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.hotel),
+              label: 'Отели',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.notifications),
+              label: 'Уведомления',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.person),
+              label: 'Профиль',
+            ),
+          ],
+        ),
       ),
     );
   }
