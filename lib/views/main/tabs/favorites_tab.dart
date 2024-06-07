@@ -34,19 +34,14 @@ class _FavoritesTabState extends State<FavoritesTab> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: TextField(
-            controller: _searchController,
-            decoration: InputDecoration(
-              hintText: 'Название, адресс или описание отеля...',
-              labelText: 'Поиск в избранных',
-              labelStyle:
-                  AppTextStyles.titleTextStyle.copyWith(color: AppColors.grey2),
-            ),
-            style: AppTextStyles.titleTextStyle,
-            cursorColor: AppColors.orange2,
-          ),
+          title: const Text('Избранные отели'),
           automaticallyImplyLeading: false,
           surfaceTintColor: Colors.white,
+          actions: [
+            IconButton(onPressed: () {
+              context.read<HotelsBloc>().add(FetchFavoriteHotels());
+            }, icon: const Icon(Icons.history))
+          ]
         ),
         body: Padding(
           padding: const EdgeInsets.symmetric(vertical: 16),

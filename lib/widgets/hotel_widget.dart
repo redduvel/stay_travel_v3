@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
@@ -41,6 +44,10 @@ class _HotelWidgetState extends State<HotelWidget> {
     }
   }
 
+    Uint8List _decodeImage(String base64String) {
+    return base64Decode(base64String);
+  }
+
   @override
   Widget build(BuildContext context) {
     return InkWell(
@@ -53,13 +60,19 @@ class _HotelWidgetState extends State<HotelWidget> {
             children: [
               ClipRRect(
                 borderRadius: const BorderRadius.all(Radius.circular(12)),
-                child: Image.network(
-                  /*widget.hotel.images.isNotEmpty ? widget.hotel.images[0] : */
-                  FakeData.fakeImage,
-                  height: 200,
-                  width: double.infinity,
-                  fit: BoxFit.cover,
-                ),
+                child: widget.hotel.images.isNotEmpty
+                    ? Image.memory(
+                        _decodeImage(widget.hotel.images[0]),
+                        height: 200,
+                        width: double.infinity,
+                        fit: BoxFit.cover,
+                      )
+                    : Image.asset(
+                        'lib/assets/hotel.jpg',
+                        height: 200,
+                        width: double.infinity,
+                        fit: BoxFit.cover,
+                      ),
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),

@@ -9,7 +9,6 @@ class FakeData {
     address: "123 Beachfront Ave, Malibu, CA 90265",
     averageRating: 4.8,
     images: [],
-    reviews: [],
     createdAt: DateTime.now(),
     features: [
       Feature(

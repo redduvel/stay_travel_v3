@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:stay_travel_v3/models/hotel.dart';
+import 'package:stay_travel_v3/themes/colors.dart';
 import 'package:stay_travel_v3/utils/fake_data.dart';
 
 class HotelPageSkeleton extends StatefulWidget {
@@ -21,8 +22,11 @@ class _HotelPageSkeletonState extends State<HotelPageSkeleton> {
           SliverToBoxAdapter(
             child: ClipRRect(
               borderRadius: const BorderRadius.all(Radius.circular(12)),
-              child: Image.network(
-                  'https://mykaleidoscope.ru/x/uploads/posts/2022-09/1663154968_6-mykaleidoscope-ru-p-buenos-aires-argentina-krasivo-6.jpg'),
+              child: Container(
+                width: double.infinity,
+                height: 200,
+                color: AppColors.grey2,
+              )
             ),
           ),
            SliverToBoxAdapter(
@@ -127,15 +131,20 @@ class _HotelPageSkeletonState extends State<HotelPageSkeleton> {
                 const Text('Фотографии', textAlign: TextAlign.left,),
                 SizedBox(
                   height: 400,
-                  child: ListView(
+                  child: ListView.separated(
                     scrollDirection: Axis.horizontal,
                     shrinkWrap: true,
-                    children: [
-                      Image.network('https://mykaleidoscope.ru/x/uploads/posts/2022-09/1663154968_6-mykaleidoscope-ru-p-buenos-aires-argentina-krasivo-6.jpg'),
-                      Image.network('https://mykaleidoscope.ru/x/uploads/posts/2022-09/1663154968_6-mykaleidoscope-ru-p-buenos-aires-argentina-krasivo-6.jpg'),
-                      Image.network('https://mykaleidoscope.ru/x/uploads/posts/2022-09/1663154968_6-mykaleidoscope-ru-p-buenos-aires-argentina-krasivo-6.jpg'),
-                      Image.network('https://mykaleidoscope.ru/x/uploads/posts/2022-09/1663154968_6-mykaleidoscope-ru-p-buenos-aires-argentina-krasivo-6.jpg')
-                    ],
+                    itemCount: 5,
+                    separatorBuilder: (context, index) {
+                      return const SizedBox(width: 5,);
+                    },
+                    itemBuilder: (context, index) {
+                      return Container(
+                        width: 300,
+                        height: 200,
+                        color: AppColors.grey2,
+                      );
+                    }
                   ),
                 )
               ],

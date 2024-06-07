@@ -13,6 +13,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<LoginEvent>(_onLoginEvent);
     on<RegisterEvent>(_onRegisterEvent);
     on<CheckAuthEvent>(_onCheckAuthEvent);
+    on<LogoutEvent>(_logoutEvent);
   }
 
   Future<void> _onLoginEvent(LoginEvent event, Emitter<AuthState> emit) async {
@@ -70,6 +71,12 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     } catch (e) {
       emit(AuthError(e.toString()));
     }
+  }
+
+  Future<void> _logoutEvent(LogoutEvent event, Emitter<AuthState> emit) async {
+    emit(AuthInitial());
+    currentUser = null;
+    await LocalStorageService.clear();
   }
 }
 

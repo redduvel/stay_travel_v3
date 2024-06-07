@@ -9,6 +9,7 @@ class User {
   final DateTime dateOfBirth;
   final DateTime dateOfRegistration;
   final bool isDeleted;
+  final bool isBusinessman;
 
   User({
     required this.id,
@@ -20,6 +21,7 @@ class User {
     required this.password,
     required this.dateOfBirth,
     required this.dateOfRegistration,
+    required this.isBusinessman,
     this.isDeleted = false,
   });
 
@@ -35,6 +37,7 @@ class User {
       dateOfBirth: DateTime.parse(json['date_of_birth']),
       dateOfRegistration: DateTime.parse(json['created_at']),
       isDeleted: json['isDeleted'] ?? false,
+      isBusinessman: json['isBusinessman'] ?? false
     );
   }
 
@@ -50,6 +53,7 @@ class User {
       'date_of_birth': dateOfBirth.toIso8601String(),
       'date_of_reg': dateOfRegistration.toIso8601String(),
       'isDeleted': isDeleted,
+      'isBusinessman': isBusinessman
     };
   }
 }

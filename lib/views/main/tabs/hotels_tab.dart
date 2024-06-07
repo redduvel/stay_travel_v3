@@ -151,7 +151,6 @@ class _HotelsTabState extends State<HotelsTab> {
                                         address: "address",
                                         averageRating: null,
                                         images: [],
-                                        reviews: [],
                                         createdAt: DateTime.now(),
                                         features: [])))
                             : const SizedBox.shrink(),

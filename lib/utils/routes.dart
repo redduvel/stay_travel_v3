@@ -5,6 +5,7 @@ import 'package:stay_travel_v3/views/auth/registration_page.dart';
 import 'package:stay_travel_v3/views/booking/create_booking_page.dart';
 import 'package:stay_travel_v3/views/hotel/hotel_page.dart';
 import 'package:stay_travel_v3/views/main/main_page.dart';
+import 'package:stay_travel_v3/views/main_for_bussines/main_page.dart';
 import 'package:stay_travel_v3/views/start_page.dart';
 import 'package:stay_travel_v3/views/welcome_page.dart';
 
@@ -19,6 +20,7 @@ class Routes {
   static const reviewPage = '/review';
   static const profilePage = '/profile';
   static const settingsPage = '/settings';
+  static const mainPageBusinessMan = '/mainBusinessman';
 }
 class AppRoutes {
   static Route generateRoute(RouteSettings settings) {
@@ -52,6 +54,10 @@ class AppRoutes {
         return MaterialPageRoute(builder: (context) {
           final hotel = settings.arguments as Hotel;
           return CreateBookingPage(hotel: hotel);
+        });
+      case Routes.mainPageBusinessMan:
+        return MaterialPageRoute(builder: (context) {
+          return const MainPageForBussines();
         });
       default:
         return MaterialPageRoute(

@@ -1,6 +1,6 @@
 class Booking {
   final String? id;
-  final String userId;
+  final List<String> userIds; // Изменено на массив userIds
   final String hotelId;
   final String? hotelName;
   final String? hotelAddress;
@@ -13,7 +13,7 @@ class Booking {
 
   Booking({
     this.id,
-    required this.userId,
+    required this.userIds, // Изменено на массив userIds
     required this.hotelId,
     required this.createdAt,
     required this.startDate,
@@ -27,12 +27,12 @@ class Booking {
 
   factory Booking.fromJson(Map<String, dynamic> json) {
     return Booking(
-      id: json['id'],
-      userId: json['user_id'],
+      id: json['_id'],
+      userIds: List<String>.from(json['users']), // Изменено на массив userIds
       hotelId: json['hotel_id'],
       hotelName: json['hotel_name'],
       hotelAddress: json['hotel_address'],
-      createdAt: DateTime.parse(json['created_at']),
+      createdAt: DateTime.parse(json['createdAt']),
       startDate: DateTime.parse(json['start_date']),
       endDate: DateTime.parse(json['end_date']),
       description: json['description'],
@@ -44,7 +44,7 @@ class Booking {
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'user_id': userId,
+      'users': userIds, // Изменено на массив userIds
       'hotel_id': hotelId,
       'createAt': createdAt.toIso8601String(),
       'start_date': startDate.toIso8601String(),

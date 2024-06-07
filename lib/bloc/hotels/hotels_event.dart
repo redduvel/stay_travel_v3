@@ -72,3 +72,12 @@ class FetchHotel extends HotelsEvent {
   @override
   List<Object?> get props => [hotelId];
 }
+
+class CreateHotel extends HotelsEvent {
+  final Map<String, dynamic> hotelData;
+
+  const CreateHotel({required this.hotelData});
+
+  @override
+  List<Object> get props => [hotelData];
+}

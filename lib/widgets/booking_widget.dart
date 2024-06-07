@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:stay_travel_v3/models/booking.dart';
 import 'package:stay_travel_v3/themes/colors.dart';
 import 'package:stay_travel_v3/themes/text_styles.dart';
@@ -39,14 +40,77 @@ class _BookingWidgetState extends State<BookingWidget> {
       case "completed":
         return {'status': "Завершено", 'icon': Icons.done_all_outlined};
       default:
-        return {};
+        return {'status': 'test', 'icon': Icons.abc};
     }
+  }
+
+  String formatDateTime(DateTime dateTime) {
+    Intl.defaultLocale = 'ru_RU';
+    
+    String formattedDate = DateFormat('d MMMM').format(dateTime);
+    String formattedTime = DateFormat('HH:mm').format(dateTime);
+    
+    return '$formattedDate, в $formattedTime';
   }
 
   @override
   Widget build(BuildContext context) {
+    final bookingStatus = _getBookingStatus(widget.booking.status);
+    final bookingColor = _getColor(widget.booking.status);
+
     return Card(
-      color: _getColor(widget.booking.status)[0],
+      child: Row(
+        children: [
+          Container(
+            width: 30,
+            height: 130,
+            decoration: BoxDecoration(
+              color: bookingColor[1],
+              borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(12),
+                bottomLeft: Radius.circular(12)
+              )
+            ),
+          ),
+          const SizedBox(width: 10),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                widget.booking.hotelName!,
+                style: AppTextStyles.bodyTextStyle.copyWith(fontSize: 20),
+              ),
+              const SizedBox(height: 5),
+              Row(
+                children: [
+                  const Icon(Icons.schedule, color: AppColors.grey2,),
+                  const SizedBox(width: 5),
+                  Text(
+                    formatDateTime(widget.booking.startDate),
+                    style: AppTextStyles.bodyTextStyle.copyWith(fontSize: 16),
+                  )
+                ],
+              ),
+              const SizedBox(height: 10),
+              Row(
+                children: [
+                  const Icon(Icons.pin_drop_outlined, color: AppColors.grey2,),
+                  const SizedBox(width: 5),
+                  SizedBox(
+                    width: 280,
+                    child: Text(widget.booking.hotelAddress!,
+                    style: AppTextStyles.bodyTextStyle.copyWith(fontSize: 16)),
+                  )
+                ],
+              ),
+            ],
+          )
+        ],
+      ),
+    );
+
+    return Card(
+      color: bookingColor[0],
       child: Padding(
         padding: const EdgeInsets.all(7.5),
         child: Column(
@@ -83,16 +147,16 @@ class _BookingWidgetState extends State<BookingWidget> {
                 Container(
                   decoration: BoxDecoration(
                     borderRadius: const BorderRadius.all(Radius.circular(10)),
-                    color: _getColor(widget.booking.status)[1],
+                    color: bookingColor[1],
                   ),
                   padding:
                       const EdgeInsets.symmetric(vertical: 2.5, horizontal: 10),
                   child: Row(
                     children: [
-                      Icon(_getBookingStatus(widget.booking.status)['icon'], color: AppColors.background,),
+                      Icon(bookingStatus['icon'], color: AppColors.background,),
                       const SizedBox(width: 5),
                       Text(
-                        _getBookingStatus(widget.booking.status)['status'],
+                        bookingStatus['status'],
                         style: AppTextStyles.bodyTextStyle
                             .copyWith(color: AppColors.background, fontSize: 16),
                       )

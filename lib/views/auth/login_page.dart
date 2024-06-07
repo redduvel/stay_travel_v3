@@ -29,7 +29,12 @@ class _LoginPageState extends State<LoginPage> {
         child: BlocListener<AuthBloc, AuthState>(
           listener: (context, state) {
             if (state is AuthAuthenticated) {
-              Navigator.pushReplacementNamed(context, Routes.mainPage);
+              if (state.user.isBusinessman) {
+                Navigator.pushReplacementNamed(
+                    context, Routes.mainPageBusinessMan);
+              } else {
+                Navigator.pushReplacementNamed(context, Routes.mainPage);
+              }
             } else if (state is AuthError) {
               ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                 content: Text(state.message),
@@ -87,11 +92,17 @@ class _LoginPageState extends State<LoginPage> {
                           onPressed: () {
                             final email = _emailOrNumberController.text;
                             final password = _passwordController.text;
-                            context.read<AuthBloc>().add(LoginEvent(email, password));
+                            context
+                                .read<AuthBloc>()
+                                .add(LoginEvent(email, password));
                           },
-                          widget: state is AuthLoading ? 
-                          const CircularProgressIndicator() : 
-                          Text("Войти", style: AppTextStyles.titleTextStyle.copyWith(fontWeight: FontWeight.w500),),
+                          widget: state is AuthLoading
+                              ? const CircularProgressIndicator()
+                              : Text(
+                                  "Войти",
+                                  style: AppTextStyles.titleTextStyle
+                                      .copyWith(fontWeight: FontWeight.w500),
+                                ),
                         ),
                         CustomButton.normal(
                           text: 'Назад',

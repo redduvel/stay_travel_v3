@@ -15,7 +15,7 @@ class ApiService {
 
   Dio dio = Dio(
     BaseOptions(
-      baseUrl: Uri.parse('https://set-chicken-purely.ngrok-free.app').toString(),
+      baseUrl: 'https://stay-travel-v3-api.onrender.com',
     ),
   );
 
@@ -28,16 +28,5 @@ class ApiService {
         'Authorization': token != null ? 'Bearer $token' : '',
       },
     );
-  }
-
-  // Server status check
-  Future<void> pingServer() async {
-    try {
-      final response = await dio.get('/ping');
-      serverAviable = true;
-      Logger.log(response.data, level: LogLevel.debug);
-    } catch (e) {
-      Logger.log('$e', level: LogLevel.error);
-    }
   }
 }

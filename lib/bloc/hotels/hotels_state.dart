@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:stay_travel_v3/bloc/hotels/hotels_service.dart';
 import 'package:stay_travel_v3/models/hotel.dart';
 
 abstract class HotelsState extends Equatable {
@@ -75,4 +76,15 @@ class HotelError extends HotelsState {
   List<Object?> get props => [message];
 }
 
+class CreateHotelLoading extends HotelsState {}
 
+class CreateHotelSuccessful extends HotelsState {}
+
+class CreateHotelError extends HotelsState {
+  final String message;
+
+  const CreateHotelError(this.message);
+
+  @override
+  List<Object?> get props => [message];
+}

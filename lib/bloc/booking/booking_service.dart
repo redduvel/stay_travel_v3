@@ -37,8 +37,7 @@ class BookingService {
         '/bookings/user',
         options: ApiService.instance.getHeaders(),
       );
-      return List<Booking>.from(
-          response.data.map((booking) => Booking.fromJson(booking)));
+      return List<Booking>.from(response.data.map((booking) => Booking.fromJson(booking)));
     } catch (e) {
       Logger.log('$e', level: LogLevel.error);
       return [];

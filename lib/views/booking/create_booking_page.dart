@@ -207,13 +207,13 @@ class _CreateBookingPageState extends State<CreateBookingPage> {
                     onPressed: () {
                       final userId = BlocProvider.of<AuthBloc>(context).currentUser!.id;
                       Booking booking = Booking(
-                        userId: userId, 
+                        userIds: [userId], 
                         hotelId: widget.hotel.id, 
                         createdAt: DateTime.now(), 
                         startDate: _selectedPeriod.start, 
                         endDate: _selectedPeriod.end, 
                         description: _notesController.text, 
-                        status: "waiting"
+                        status: "waiting",
                       );
 
                       context.read<BookingBloc>().add(CreateBooking(booking));

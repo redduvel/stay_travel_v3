@@ -1,5 +1,4 @@
 import 'feature.dart';
-import 'review.dart';
 
 class Hotel {
   final String id;
@@ -8,7 +7,6 @@ class Hotel {
   final String address;
   final double? averageRating;
   final List<String> images;
-  final List<Review>? reviews;
   final List<Feature> features;
   final bool isDeleted;
   final DateTime createdAt;
@@ -21,7 +19,6 @@ class Hotel {
     required this.address,
     required this.averageRating,
     required this.images,
-    required this.reviews,
     this.isDeleted = false,
     required this.createdAt,
     required this.features,
@@ -36,10 +33,9 @@ class Hotel {
       address: json['address'],
       averageRating: json['averageRating'],
       images: List<String>.from(json['images']),
-      reviews: List<Review>.from(json['reviews'].map((model) => Review.fromJson(model)) ?? []),
       features: List<Feature>.from(json['features'].map((model) => Feature.fromJson(model)) ?? []),
       isDeleted: json['isDeleted'] ?? false,
-      createdAt: DateTime.parse(json['createAt']),
+      createdAt: DateTime.parse(json['createdAt']),
     );
   }
 
@@ -51,9 +47,8 @@ class Hotel {
       'address': address,
       'averageRating': averageRating,
       'images': images,
-      'reviews': reviews!.map((review) => review.toJson()).toList(),
       'isDeleted': isDeleted,
-      'createAt': createdAt.toIso8601String(),
+      'createdAt': createdAt.toIso8601String(),
     };
   }
 }

@@ -35,7 +35,9 @@ class _BookingsTabState extends State<BookingsTab> {
           automaticallyImplyLeading: false,
           surfaceTintColor: Colors.white,
           actions: [
-            IconButton(onPressed: () {}, icon: const Icon(Icons.history))
+            IconButton(onPressed: () {
+              context.read<BookingBloc>().add(FetchUserBookings());
+            }, icon: const Icon(Icons.history))
           ],
           bottom: PreferredSize(
               preferredSize: const Size(double.infinity, 60),
@@ -80,7 +82,7 @@ class _BookingsTabState extends State<BookingsTab> {
                       return Skeletonizer(
                         child: BookingWidget(
                             booking: Booking(
-                                userId: "userId",
+                                userIds: [],
                                 hotelId: "hotelId",
                                 createdAt: DateTime.now(),
                                 startDate: DateTime.now(),

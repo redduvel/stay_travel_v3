@@ -1,7 +1,9 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:stay_travel_v3/models/hotel.dart';
 import 'package:stay_travel_v3/services/api_service.dart';
+import 'package:stay_travel_v3/services/local_storage_service.dart';
 import 'package:stay_travel_v3/utils/logger.dart';
 
 class HotelService {
@@ -12,8 +14,9 @@ class HotelService {
 
       switch (response.statusCode) {
         case 200:
-          return List<Hotel>.from(
+          final hotels = List<Hotel>.from(
               response.data['hotels'].map((hotel) => Hotel.fromJson(hotel)));
+          return hotels;
         case 404:
           Logger.log("Hotels not found");
           return [];
@@ -99,6 +102,54 @@ class HotelService {
       _handleDioError(e);
     } catch (e) {
       throw Exception('Unexpected error: $e');
+    }
+  }
+
+  Future<bool> createHotel({
+    required String name,
+    required String address,
+    required String description,
+    required List<String> features,
+    required List<String> photos,
+  }) async {
+    try {
+      // Convert images to base64
+      List<String> base64Photos = photos.map((path) {
+        File file = File(path);
+        return base64Encode(file.readAsBytesSync());
+      }).toList();
+
+      // Prepare JSON data
+      Map<String, dynamic> data = {
+        'name': name,
+        'address': address,
+        'description': description,
+        'features': features,
+        'photos': base64Photos,
+      };
+
+      Response response = await ApiService.instance.dio.post(
+        '/hotels/',
+        data: data,
+        options: Options(
+          headers: {
+            'Content-Type': 'application/json',
+            // Include authorization header if needed
+            'Authorization': 'Bearer ${LocalStorageService.getToken()}',
+          },
+        ),
+      );
+
+      if (response.statusCode == 201) {
+        print('Hotel created successfully');
+        return true;
+      } else {
+        print('Failed to create hotel');
+        return false;
+      }
+    } catch (e) {
+      print('Error: $e');
+      return false;
     }
   }
 

@@ -17,6 +17,7 @@ class HotelsBloc extends Bloc<HotelsEvent, HotelsState> {
     on<AddHotelToFavorites>(_onAddHotelToFavorites);
     on<RemoveHotelFromFavorites>(_onRemoveHotelFromFavorites);
     on<FetchHotel>(_fetchHotel);
+    on<CreateHotel>(_createHotel);
   }
 
   // Получение/Поиск/Сортировка отелей
@@ -82,11 +83,7 @@ class HotelsBloc extends Bloc<HotelsEvent, HotelsState> {
     try {
       final favoriteHotels = await hotelService.fetchFavoriteHotels();
 
-      if (favoriteHotels.isNotEmpty) {
-        emit(FavoriteHotelsLoaded(favoriteHotels));
-      } else {
-        emit(const FavoriteHotelsError('Нет избранных отелей'));
-      }
+      emit(FavoriteHotelsLoaded(favoriteHotels));
     } catch (e) {
       emit(const FavoriteHotelsError('Неизвестная ошибка.'));
     }
@@ -132,6 +129,30 @@ class HotelsBloc extends Bloc<HotelsEvent, HotelsState> {
       emit(HotelError(e.toString()));
     }
   }
+
+
+  // Создание отеля
+Future<void> _createHotel(CreateHotel event, Emitter<HotelsState> emit) async {
+  emit(CreateHotelLoading());
+  try {
+    final success = await hotelService.createHotel(
+      name: event.hotelData['name'],
+      address: event.hotelData['address'],
+      description: event.hotelData['description'],
+      features: event.hotelData['features'],
+      photos: event.hotelData['images'],
+    );
+
+    if (success) {
+      emit(CreateHotelSuccessful());
+    } else {
+      emit(const CreateHotelError('Ошибка создания отеля'));
+    }
+  } catch (e) {
+    emit(CreateHotelError(e.toString()));
+  }
+}
+
 }
 
 
