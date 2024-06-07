@@ -9,6 +9,7 @@ class CustomButton extends StatefulWidget {
   final String? header;
   final VoidCallback? onPressed;
   final Color? backgroundColor;
+  final Color? foregroundColor;
   final double? width;
   final double? height;
   final double? margin;
@@ -25,7 +26,7 @@ class CustomButton extends StatefulWidget {
     this.width,
     this.height,
     this.margin,
-    this.mainAxisAlignment,
+    this.mainAxisAlignment, this.foregroundColor,
   })  : header = null,
         widget = null;
 
@@ -40,7 +41,7 @@ class CustomButton extends StatefulWidget {
     this.width,
     this.height,
     this.margin,
-    this.mainAxisAlignment,
+    this.mainAxisAlignment, this.foregroundColor,
   }) : widget = null;
 
   // Конструктор для обычной кнопки с текстом
@@ -52,7 +53,7 @@ class CustomButton extends StatefulWidget {
       this.width,
       this.height,
       this.margin,
-      this.mainAxisAlignment})
+      this.mainAxisAlignment, this.foregroundColor})
       : icon = null,
         header = null,
         widget = null;
@@ -65,7 +66,7 @@ class CustomButton extends StatefulWidget {
       this.width,
       this.height,
       this.margin,
-      this.mainAxisAlignment})
+      this.mainAxisAlignment, this.foregroundColor})
       : icon = null,
         header = null,
         text = null;
@@ -82,6 +83,7 @@ class _CustomButtonState extends State<CustomButton> {
       child: ElevatedButton(
         style: _style(
           widget.backgroundColor ?? AppColors.orange,
+          widget.foregroundColor ?? AppColors.grey2,
           widget.width ?? double.infinity,
           widget.height ??
               double.minPositive + (widget.header != null ? 15 : 0),
@@ -162,11 +164,11 @@ class _CustomButtonState extends State<CustomButton> {
   }
 }
 
-ButtonStyle _style(Color backgroundColor, double width, double height) {
+ButtonStyle _style(Color backgroundColor, Color foregroundColor, double width, double height) {
   return ButtonStyle(
     backgroundColor: WidgetStateProperty.all<Color>(backgroundColor),
     foregroundColor:
-        WidgetStateProperty.all<Color>(const Color.fromRGBO(23, 26, 31, 1)),
+        WidgetStateProperty.all<Color>(foregroundColor),
     padding: WidgetStateProperty.all<EdgeInsets>(
         const EdgeInsets.symmetric(horizontal: 10, vertical: 5)),
     shape: WidgetStateProperty.all<OutlinedBorder>(

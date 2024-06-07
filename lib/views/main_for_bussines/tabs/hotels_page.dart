@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:stay_travel_v3/models/hotel.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:skeletonizer/skeletonizer.dart';
+import 'package:stay_travel_v3/bloc/hotels/user_hotels/user_hotels_bloc.dart';
+import 'package:stay_travel_v3/bloc/hotels/user_hotels/user_hotels_event.dart';
+import 'package:stay_travel_v3/bloc/hotels/user_hotels/user_hotels_state.dart';
 import 'package:stay_travel_v3/themes/colors.dart';
+import 'package:stay_travel_v3/utils/fake_data.dart';
 import 'package:stay_travel_v3/views/main_for_bussines/create_hotel_page.dart';
-import 'package:stay_travel_v3/widgets/hotel_widget.dart';
+import 'package:stay_travel_v3/widgets/user_hotel_widget.dart';
 
 class HotelsPageBussines extends StatefulWidget {
   const HotelsPageBussines({super.key});
@@ -12,6 +17,13 @@ class HotelsPageBussines extends StatefulWidget {
 }
 
 class _HotelsPageBussinesState extends State<HotelsPageBussines> {
+
+  @override
+  void initState() {
+    context.read<UserHotelsBloc>().add(const FetchUserHotels());
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -19,16 +31,40 @@ class _HotelsPageBussinesState extends State<HotelsPageBussines> {
         automaticallyImplyLeading: false,
         title: const Text('Ваши отели'),
       ),
-      body: CustomScrollView(
-        scrollDirection: Axis.vertical,
-        slivers: [
-          SliverList(delegate: SliverChildBuilderDelegate(
-            (context, index) {
-              return HotelWidget(hotel: Hotel(id: "id", name: "name", description: "description", address: "address", averageRating: null, images: [],  createdAt: DateTime.now(), features: []));
-            },
-            childCount: 5
-          ))
-        ],
+      body: BlocBuilder<UserHotelsBloc, UserHotelsState>(
+        builder: (context, state) {
+          if (state is UserHotelsLoading) {
+            return Skeletonizer(
+              child: CustomScrollView(
+              scrollDirection: Axis.vertical,
+              slivers: [
+                SliverList(delegate: SliverChildBuilderDelegate(
+                  (context, index) {
+                    return UserHotelWidget(hotel: FakeData.fakeHotel);
+                  },
+                  childCount: 5
+                ))
+              ],
+            )
+            );
+          }
+
+          if (state is UserHotelsLoaded) {
+            return CustomScrollView(
+              scrollDirection: Axis.vertical,
+              slivers: [
+                SliverList(delegate: SliverChildBuilderDelegate(
+                  (context, index) {
+                    return UserHotelWidget(hotel: state.hotels[index]);
+                  },
+                  childCount: state.hotels.length -1
+                ))
+              ],
+            );
+          }
+
+          return Text('sbsdb');
+        },
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: AppColors.orange,

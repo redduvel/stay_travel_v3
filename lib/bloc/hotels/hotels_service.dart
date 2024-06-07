@@ -29,6 +29,24 @@ class HotelService {
     }
   }
 
+  Future<List<Hotel>> fetchUserHotels() async {
+final response = await ApiService.instance.dio.get(
+        '/hotels/user',
+        options: ApiService.instance.getHeaders()
+      );
+      print("fetch my hotels");
+      switch (response.statusCode) {
+        case 200:
+          final hotels = List<Hotel>.from(response.data.map((hotel) => Hotel.fromJson(hotel)));
+          return hotels;
+        case 404:
+          Logger.log("Hotels not found");
+          return [];
+      }
+
+      return [];
+  }
+
   Future<Hotel?> fetchHotelById(String hotelId) async {
     try {
       final response = await ApiService.instance.dio.get('/hotels/$hotelId');

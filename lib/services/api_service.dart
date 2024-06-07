@@ -1,5 +1,4 @@
 import 'package:dio/dio.dart';
-import '../utils/logger.dart';
 import 'local_storage_service.dart';
 
 class ApiService {

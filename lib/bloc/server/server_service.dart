@@ -6,8 +6,8 @@ class ServerService {
   Future<bool> pingServer() async {
     try {
       final response = await ApiService.instance.dio.get('/ping');
-      Logger.log(response.data, level: LogLevel.debug);
-      if (response.statusCode == 200 && response.data['status'] == "ok") {
+      Logger.log(response.data['message'], level: LogLevel.debug);
+      if (response.data['status'] == "ok") {
         return true;
       } else {
         return false;

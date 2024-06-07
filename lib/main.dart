@@ -6,7 +6,11 @@ import 'package:stay_travel_v3/bloc/auth/auth_service.dart';
 import 'package:stay_travel_v3/bloc/booking/booking_bloc.dart';
 import 'package:stay_travel_v3/bloc/booking/booking_service.dart';
 import 'package:stay_travel_v3/bloc/hotels/hotels_bloc.dart';
+import 'package:stay_travel_v3/bloc/hotels/hotels_event.dart';
 import 'package:stay_travel_v3/bloc/hotels/hotels_service.dart';
+import 'package:stay_travel_v3/bloc/hotels/user_hotels/user_hotels_bloc.dart';
+import 'package:stay_travel_v3/bloc/server/server_bloc.dart';
+import 'package:stay_travel_v3/bloc/server/server_service.dart';
 import 'package:stay_travel_v3/controllers/features_controller.dart';
 import 'package:stay_travel_v3/services/local_storage_service.dart';
 import 'package:stay_travel_v3/views/main/main_page.dart';
@@ -20,10 +24,12 @@ void main() async {
   runApp(
     MultiBlocProvider(
       providers: [
-        ChangeNotifierProvider(create: (context) => FeaturesController()),
+        BlocProvider<ServerBloc>(create: (context) => ServerBloc(ServerService())),
         BlocProvider<AuthBloc>(create: (context) => AuthBloc(AuthService())),
+        ChangeNotifierProvider(create: (context) => FeaturesController()),
         BlocProvider<HotelsBloc>(create: (context) => HotelsBloc(HotelService())),
-        BlocProvider<BookingBloc>(create: (context) => BookingBloc(BookingService()))
+        BlocProvider<BookingBloc>(create: (context) => BookingBloc(BookingService())),
+        BlocProvider<UserHotelsBloc>(create: (context) => UserHotelsBloc(HotelService()))
       ],
       child: const MyApp(),
     ),
@@ -35,17 +41,17 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return  MaterialApp(
-      localizationsDelegates: const [
+    return  const MaterialApp(
+      localizationsDelegates: [
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
         DefaultCupertinoLocalizations.delegate,
       ],
-      locale: const Locale('ru', 'RU'),
+      locale: Locale('ru', 'RU'),
       title: 'StayTravel',
       onGenerateRoute: AppRoutes.generateRoute,
       debugShowCheckedModeBanner: false,
-      initialRoute: Routes.mainPage,
+      initialRoute: Routes.welcomePage,
       home: MainPage(),
     );
   }

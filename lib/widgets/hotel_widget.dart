@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'dart:typed_data';
-
+import 'package:expandable_text/expandable_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
@@ -10,7 +10,6 @@ import 'package:stay_travel_v3/bloc/hotels/hotels_event.dart';
 import 'package:stay_travel_v3/controllers/features_controller.dart';
 import 'package:stay_travel_v3/themes/colors.dart';
 import 'package:stay_travel_v3/themes/text_styles.dart';
-import 'package:stay_travel_v3/utils/fake_data.dart';
 import 'package:stay_travel_v3/utils/routes.dart';
 import 'package:stay_travel_v3/models/hotel.dart';
 
@@ -83,10 +82,23 @@ class _HotelWidgetState extends State<HotelWidget> {
                       color: AppColors.black
                     )),
                     Text(widget.hotel.address, style: AppTextStyles.bodyTextStyle),
-                    Text(widget.hotel.description, style: AppTextStyles.bodyTextStyle.copyWith(
+                    ExpandableText(
+                      widget.hotel.description, 
+                      linkColor: AppColors.orange2,
+                      maxLines: 4,
+                      expandText: 'Показать больше',
+                      style: AppTextStyles.bodyTextStyle.copyWith(
                       fontSize: 16,
-                      color: AppColors.black
-                    )),
+                      color: AppColors.black,
+                    
+                    ),
+                    ),
+                    /*ExpandableText(text: widget.hotel.description, style: AppTextStyles.bodyTextStyle.copyWith(
+                      fontSize: 16,
+                      color: AppColors.black,
+                    
+                    ),
+                    ),*/
                     const SizedBox(height: 5),
                     Container(
                       width: double.infinity,

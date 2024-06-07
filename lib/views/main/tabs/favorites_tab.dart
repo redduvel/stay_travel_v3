@@ -6,7 +6,6 @@ import 'package:stay_travel_v3/bloc/hotels/hotels_bloc.dart';
 import 'package:stay_travel_v3/bloc/hotels/hotels_event.dart';
 import 'package:stay_travel_v3/bloc/hotels/hotels_state.dart';
 import 'package:stay_travel_v3/models/hotel.dart';
-import 'package:stay_travel_v3/themes/colors.dart';
 import 'package:stay_travel_v3/themes/text_styles.dart';
 import 'package:stay_travel_v3/utils/fake_data.dart';
 import 'package:stay_travel_v3/widgets/hotel_widget.dart';
@@ -19,7 +18,6 @@ class FavoritesTab extends StatefulWidget {
 }
 
 class _FavoritesTabState extends State<FavoritesTab> {
-  final TextEditingController _searchController = TextEditingController();
 
   @override
   void initState() {

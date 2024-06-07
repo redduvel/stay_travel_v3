@@ -1,5 +1,4 @@
 import 'package:equatable/equatable.dart';
-import 'package:stay_travel_v3/bloc/hotels/hotels_service.dart';
 import 'package:stay_travel_v3/models/hotel.dart';
 
 abstract class HotelsState extends Equatable {

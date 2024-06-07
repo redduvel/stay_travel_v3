@@ -22,10 +22,16 @@ class AuthAuthenticated extends AuthState {
 }
 
 class AuthError extends AuthState {
+  final AuthErrorType? type;
   final String message;
 
-  const AuthError(this.message);
+  const AuthError(this.message, this.type);
 
   @override
   List<Object> get props => [message];
+}
+
+enum AuthErrorType {
+  outdatedSession,
+  serverError
 }

@@ -24,10 +24,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         emit(AuthAuthenticated(user: user));
         currentUser = user;
       } else {
-        emit(const AuthError('Проверьте правильность введенных данных.'));
+        emit(const AuthError('Проверьте правильность введенных данных.', AuthErrorType.serverError));
       }
     } catch (e) {
-      emit(AuthError(e.toString()));
+      emit(AuthError(e.toString(), AuthErrorType.serverError));
     }
   }
 
@@ -46,10 +46,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         emit(AuthAuthenticated(user: user));
         currentUser = user;
       } else {
-        emit(const AuthError('Registration failed'));
+        emit(const AuthError('Ошибка регистрации', AuthErrorType.serverError));
       }
     } catch (e) {
-      emit(AuthError(e.toString()));
+      emit(AuthError(e.toString(), AuthErrorType.serverError));
     }
   }
 
@@ -63,13 +63,13 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           emit(AuthAuthenticated(user: user));
           currentUser = user;
         } else {
-          emit(const AuthError('Устаревшая сессия.'));
+          emit(const AuthError('Устаревшая сессия.', AuthErrorType.outdatedSession));
         }
       } else {
-        emit(const AuthError('Устаревшая сессия.'));
+        emit(const AuthError('Не найдено сохранненого аккаунта.', AuthErrorType.outdatedSession));
       }
     } catch (e) {
-      emit(AuthError(e.toString()));
+      emit(AuthError(e.toString(), AuthErrorType.serverError));
     }
   }
 

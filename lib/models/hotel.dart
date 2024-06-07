@@ -32,7 +32,7 @@ class Hotel {
       description: json['description'],
       address: json['address'],
       averageRating: json['averageRating'],
-      images: List<String>.from(json['images']),
+      images: List<String>.from(json['photos']),
       features: List<Feature>.from(json['features'].map((model) => Feature.fromJson(model)) ?? []),
       isDeleted: json['isDeleted'] ?? false,
       createdAt: DateTime.parse(json['createdAt']),
