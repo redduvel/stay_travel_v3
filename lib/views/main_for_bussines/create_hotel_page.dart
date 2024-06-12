@@ -10,6 +10,7 @@ import 'package:stay_travel_v3/bloc/hotels/hotels_event.dart';
 import 'package:stay_travel_v3/bloc/hotels/hotels_state.dart';
 import 'package:stay_travel_v3/controllers/features_controller.dart';
 import 'package:stay_travel_v3/themes/text_styles.dart';
+import 'package:stay_travel_v3/utils/routes.dart';
 import 'package:stay_travel_v3/widgets/custom_button.dart';
 import 'package:stay_travel_v3/widgets/hotel_features.dart';
 import 'package:stay_travel_v3/widgets/input_field.dart';
@@ -85,6 +86,7 @@ class _CreateHotelPageState extends State<CreateHotelPage> {
     return BlocListener<HotelsBloc, HotelsState>(
       listener: (context, state) {
         if (state is CreateHotelSuccessful) {
+          Navigator.pushReplacementNamed(context, Routes.mainPageBusinessMan);
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Отель успешно создан.🥳')),
           );

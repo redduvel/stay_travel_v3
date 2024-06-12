@@ -149,7 +149,7 @@ class _ProfileTabState extends State<ProfileTab> {
                              CircleAvatar(
                               backgroundImage: state.user.avatar != null ?
                               MemoryImage(base64Decode(state.user.avatar!)) : null,
-                              radius: 90,
+                              radius: 80,
                             ),
                             const SizedBox(width: 10),
                             SizedBox(

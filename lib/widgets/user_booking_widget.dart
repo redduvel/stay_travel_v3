@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:loading_indicator/loading_indicator.dart';
+import 'package:stay_travel_v3/bloc/auth/auth_bloc.dart';
 import 'package:stay_travel_v3/bloc/booking/booking_bloc.dart';
 import 'package:stay_travel_v3/bloc/booking/booking_event.dart';
 import 'package:stay_travel_v3/bloc/booking/booking_state.dart';
+import 'package:stay_travel_v3/bloc/messages/messages_bloc.dart';
+import 'package:stay_travel_v3/bloc/messages/messages_event.dart';
+import 'package:stay_travel_v3/bloc/messages/messages_state.dart';
 import 'package:stay_travel_v3/models/booking.dart';
+import 'package:stay_travel_v3/models/message.dart';
 import 'package:stay_travel_v3/themes/colors.dart';
 import 'package:stay_travel_v3/themes/text_styles.dart';
 import 'package:stay_travel_v3/widgets/custom_button.dart';
@@ -101,7 +106,7 @@ class BookingRequestWidget extends StatelessWidget {
                     IconButton(onPressed: () {}, icon: const Icon(Icons.call)),
                     IconButton(
                       icon: const Icon(Icons.reply),
-                      onPressed: () => _showBottomModal(context, booking.id!),
+                      onPressed: () => _showBottomModal(context, booking.id!, booking.userIds[0]),
                     ),
                   ],
                 )
@@ -113,9 +118,9 @@ class BookingRequestWidget extends StatelessWidget {
     );
   }
 
-  void _showBottomModal(BuildContext context, String bookingId) {
+  void _showBottomModal(BuildContext context, String bookingId, String clientId) {
     TextEditingController _messageController = TextEditingController();
-
+    int t = 0;
     showModalBottomSheet(
       context: context,
       builder: (context) {
@@ -140,27 +145,75 @@ class BookingRequestWidget extends StatelessWidget {
                     decoration: textFieldDecoration('Сообщение клиенту'),
                     textAlign: TextAlign.left,
                     textAlignVertical: TextAlignVertical.center,
-                    obscureText: true,
                     maxLines: 1,
                   ),
                 ),
                 const SliverToBoxAdapter(
                   child: SizedBox(height: 10),
                 ),
-                 SliverToBoxAdapter(
-                    child: CustomButton.load(
-                  widget: state is BookingLoading ? LoadingIndicator(indicatorType: Indicator.ballSpinFadeLoader) : Text('Одобрить'),
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  onPressed: () {
-                    context.read<BookingBloc>().add(UpdateBookingStatus(bookingId, 'active'));
+                 BlocListener<MessagesBloc, MessageState>(
+                  listener: (context, state) {
+                    if (state is MessageSended) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Ответ успешно отправлен.'))
+                      );
+
+                    } 
+
+                    if (state is MessageError) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Ошибка отправки ответа.'))
+                      );
+
+
+                    }
                   },
-                )),
+                   child: SliverToBoxAdapter(
+                      child: CustomButton.load(
+                    widget: state is BookingLoading && t == 1 ? LoadingIndicator(indicatorType: Indicator.ballSpinFadeLoader) : Text('Одобрить'),
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    onPressed: () {
+                      t = 1;
+                      if (_messageController.text.isEmpty) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Заполните поле "Сообщение"'))
+                        );
+                      } else {
+                        Message message = Message(
+                          clienId: clientId,
+                          businessmanId: context.read<AuthBloc>().currentUser!.id,
+                          status: 'active',
+                          message: _messageController.text
+                        );
+                   
+                        context.read<BookingBloc>().add(UpdateBookingStatus(bookingId, 'active'));
+                        context.read<MessagesBloc>().add(CreateMessage(message: message));
+                      }
+                   
+                    },
+                                   )),
+                 ),
                  SliverToBoxAdapter(
-                    child: CustomButton.load(
-                  widget: state is BookingLoading ? LoadingIndicator(indicatorType: Indicator.ballSpinFadeLoader) : Text('Отказать'),
+                  child: CustomButton.load(
+                  widget: state is BookingLoading && t == 1 ? LoadingIndicator(indicatorType: Indicator.ballSpinFadeLoader) : Text('Отказать'),
                   mainAxisAlignment: MainAxisAlignment.center,
-                  onPressed: () {
-                    context.read<BookingBloc>().add(UpdateBookingStatus(bookingId, 'notApproved'));
+                  onPressed:  () {
+                    if (_messageController.text.isEmpty) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Заполните поле "Сообщение"'))
+                      );
+                    } else {
+                      Message message = Message(
+                        clienId: clientId,
+                        businessmanId: context.read<AuthBloc>().currentUser!.id,
+                        status: 'notApproved',
+                        message: _messageController.text
+                      );
+
+                      context.read<BookingBloc>().add(UpdateBookingStatus(bookingId, 'notApproved'));
+                      context.read<MessagesBloc>().add(CreateMessage(message: message));
+                    }
+
                   },
                 )),
               ],
@@ -169,6 +222,8 @@ class BookingRequestWidget extends StatelessWidget {
           },
         );
       },
+    ).whenComplete( () => 
+                      context.read<BookingBloc>().add(FetchBusinessmanBookings())
     );
   }
 }

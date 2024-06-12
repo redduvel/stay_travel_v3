@@ -9,6 +9,8 @@ import 'package:stay_travel_v3/bloc/booking/booking_service.dart';
 import 'package:stay_travel_v3/bloc/hotels/hotels_bloc.dart';
 import 'package:stay_travel_v3/bloc/hotels/hotels_service.dart';
 import 'package:stay_travel_v3/bloc/hotels/user_hotels/user_hotels_bloc.dart';
+import 'package:stay_travel_v3/bloc/messages/messages_bloc.dart';
+import 'package:stay_travel_v3/bloc/messages/messages_services.dart';
 import 'package:stay_travel_v3/bloc/server/server_bloc.dart';
 import 'package:stay_travel_v3/bloc/server/server_service.dart';
 import 'package:stay_travel_v3/bloc/user/user_bloc.dart';
@@ -37,7 +39,8 @@ void main() async {
         BlocProvider<HotelsBloc>(create: (context) => HotelsBloc(HotelService())),
         BlocProvider<BookingBloc>(create: (context) => BookingBloc(BookingService())),
         BlocProvider<UserHotelsBloc>(create: (context) => UserHotelsBloc(HotelService())),
-        BlocProvider<UserBloc>(create: (context) => UserBloc(UserService()))
+        BlocProvider<UserBloc>(create: (context) => UserBloc(UserService())),
+        BlocProvider<MessagesBloc>(create: (context) => MessagesBloc(MessagesServices()))
       ],
       child: const MyApp(),
     ),

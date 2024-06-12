@@ -36,39 +36,41 @@ class NotificationCard extends StatelessWidget {
 
     Color bgColor = backgroundColor(notificationType);
 
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-      margin: const EdgeInsets.symmetric(vertical: 5),
-      decoration: BoxDecoration(
-        color: bgColor,
-        borderRadius: const BorderRadius.all(Radius.circular(8))
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Row(
-            children: [
-              icon,
-              const SizedBox(width: 12),
-              SizedBox(
-                width: 264,
-                child: Text(
-                  notificationText,
-                  textAlign: TextAlign.left,
-                  style: const TextStyle(
-                    color: Colors.white
+    return Card(
+            
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+        decoration: BoxDecoration(
+          color: bgColor,
+          borderRadius: const BorderRadius.all(Radius.circular(8))
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Row(
+              children: [
+                icon,
+                const SizedBox(width: 12),
+                SizedBox(
+                  width: 264,
+                  child: Text(
+                    notificationText,
+                    textAlign: TextAlign.left,
+                    style: const TextStyle(
+                      color: Colors.white
+                    ),
                   ),
-                ),
-              )
-            ],
-          ),
-          const Icon(
-            Icons.chevron_right,
-            color: Colors.white,
-          )
-        ],
+                )
+              ],
+            ),
+            const Icon(
+              Icons.chevron_right,
+              color: Colors.white,
+            )
+          ],
+        ),
       ),
     );
   }

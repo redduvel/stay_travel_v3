@@ -7,13 +7,17 @@ class Message {
   Message({required this.clienId, required this.businessmanId, required this.status, required this.message});
 
   factory Message.fromJson(Map<String, dynamic> json) {
-    return Message(clienId: json['clientId'], businessmanId: json['businessmanId'], status: json['status'], message: json['message']);
+    return Message(
+      clienId: json['client_id'], 
+      businessmanId: json['businessman_id'], 
+      status: json['status'], 
+      message: json['message']);
   }
 
     Map<String, dynamic> toJson() {
     return {
-      'clientId': clienId,
-      'businessmanId': businessmanId,
+      'client_id': clienId,
+      'businessman_id': businessmanId,
       'status': status,
       'message': message
     };

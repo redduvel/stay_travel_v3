@@ -12,6 +12,7 @@ import 'package:stay_travel_v3/models/hotel.dart';
 import 'package:stay_travel_v3/themes/colors.dart';
 import 'package:stay_travel_v3/themes/text_styles.dart';
 import 'package:intl/intl.dart';
+import 'package:stay_travel_v3/utils/routes.dart';
 import 'package:stay_travel_v3/widgets/custom_button.dart';
 
 class CreateBookingPage extends StatefulWidget {
@@ -206,6 +207,7 @@ class _CreateBookingPageState extends State<CreateBookingPage> {
                   child: BlocListener<BookingBloc, BookingState>(
                     listener:(context, state) {
                       if (state is BookingCreated) {
+                        Navigator.pushReplacementNamed(context, Routes.mainPage);
                         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                           content: Text("Заявка успешно создана🥳"),
                         ));
