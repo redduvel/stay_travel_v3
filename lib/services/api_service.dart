@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:stay_travel_v3/utils/logger.dart';
 import 'local_storage_service.dart';
 
 class ApiService {
@@ -24,6 +25,7 @@ class ApiService {
 
     return Options(
       headers: {
+        'Content-Type': 'application/json',
         'Authorization': token != null ? 'Bearer $token' : '',
       },
     );

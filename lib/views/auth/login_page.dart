@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:loading_indicator/loading_indicator.dart';
 import 'package:stay_travel_v3/bloc/auth/auth_bloc.dart';
 import 'package:stay_travel_v3/bloc/auth/auth_event.dart';
 import 'package:stay_travel_v3/bloc/auth/auth_state.dart';
@@ -97,7 +98,9 @@ class _LoginPageState extends State<LoginPage> {
                                 .add(LoginEvent(email, password));
                           },
                           widget: state is AuthLoading
-                              ? const CircularProgressIndicator()
+                              ? const LoadingIndicator(
+                                indicatorType: Indicator.ballSpinFadeLoader,
+                              )
                               : Text(
                                   "Войти",
                                   style: AppTextStyles.titleTextStyle

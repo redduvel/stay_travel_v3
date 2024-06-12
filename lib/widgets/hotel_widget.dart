@@ -8,8 +8,10 @@ import 'package:provider/provider.dart';
 import 'package:stay_travel_v3/bloc/hotels/hotels_bloc.dart';
 import 'package:stay_travel_v3/bloc/hotels/hotels_event.dart';
 import 'package:stay_travel_v3/controllers/features_controller.dart';
+import 'package:stay_travel_v3/services/local_storage_service.dart';
 import 'package:stay_travel_v3/themes/colors.dart';
 import 'package:stay_travel_v3/themes/text_styles.dart';
+import 'package:stay_travel_v3/utils/logger.dart';
 import 'package:stay_travel_v3/utils/routes.dart';
 import 'package:stay_travel_v3/models/hotel.dart';
 
@@ -24,6 +26,13 @@ class HotelWidget extends StatefulWidget {
 class _HotelWidgetState extends State<HotelWidget> {
 
   void toggleFavorite() {
+    if (LocalStorageService.getToken() == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Сначала войдите в аккаунт.'))
+      );
+      return;
+    }
+
     if (widget.hotel.isFavorite) {
       setState(() {
         widget.hotel.isFavorite = false;

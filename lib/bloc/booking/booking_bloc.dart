@@ -11,6 +11,7 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
     on<UpdateBookingStatus>(_onUpdateBookingStatus);
     on<DeleteBooking>(_onDeleteBooking);
     on<FetchUserBookings>(_onFetchUserBookings);
+    on<FetchBusinessmanBookings>(_onFetchBusinessmanBookings);
   }
 
   Future<void> _onCreateBooking(CreateBooking event, Emitter<BookingState> emit) async {
@@ -59,6 +60,16 @@ class BookingBloc extends Bloc<BookingEvent, BookingState> {
     emit(BookingLoading());
     try {
       final bookings = await bookingService.fetchUserBookings();
+      emit(BookingLoaded(bookings));
+    } catch (e) {
+      emit(BookingError(e.toString()));
+    }
+  }
+
+  Future<void> _onFetchBusinessmanBookings(FetchBusinessmanBookings event, Emitter<BookingState> emit) async {
+    emit(BookingLoading());
+    try {
+      final bookings = await bookingService.fetchBusinessmanBookings();
       emit(BookingLoaded(bookings));
     } catch (e) {
       emit(BookingError(e.toString()));

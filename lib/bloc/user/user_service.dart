@@ -19,12 +19,17 @@ class UserService {
 
   Future<bool> updatePassword(String currentPassword, String newPassword) async {
     try {
-      await ApiService.instance.dio.put(
+      final response = await ApiService.instance.dio.put(
         '/settings/update_password',
-        data: {'currentPassword': currentPassword, 'newPassword': newPassword},
+        data: {'old_password': currentPassword, 'new_password': newPassword},
         options: ApiService.instance.getHeaders(),
       );
-      return true;
+
+      if (response.statusCode == 200) {
+        return true;
+      }else {
+        return false;
+      }
     } catch (e) {
       Logger.log('$e', level: LogLevel.error);
       return false;

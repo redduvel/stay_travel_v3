@@ -5,12 +5,13 @@ import 'package:stay_travel_v3/utils/logger.dart';
 class BookingService {
   Future<String?> createBooking(Booking booking) async {
     try {
+      print(booking.toJson());
       final response = await ApiService.instance.dio.post(
         '/bookings/',
         data: booking.toJson(),
         options: ApiService.instance.getHeaders(),
       );
-      return response.data['id'];
+      return response.data['booking_id'];
     } catch (e) {
       Logger.log('$e', level: LogLevel.error);
       return null;
@@ -37,6 +38,20 @@ class BookingService {
         '/bookings/user',
         options: ApiService.instance.getHeaders(),
       );
+      return List<Booking>.from(response.data.map((booking) => Booking.fromJson(booking)));
+    } catch (e) {
+      Logger.log('$e', level: LogLevel.error);
+      return [];
+    }
+  }
+
+  Future<List<Booking>> fetchBusinessmanBookings() async {
+    try {
+      final response = await ApiService.instance.dio.get(
+        '/bookings/businessman',
+        options: ApiService.instance.getHeaders()
+      );
+
       return List<Booking>.from(response.data.map((booking) => Booking.fromJson(booking)));
     } catch (e) {
       Logger.log('$e', level: LogLevel.error);

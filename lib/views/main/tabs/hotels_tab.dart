@@ -74,7 +74,7 @@ class _HotelsTabState extends State<HotelsTab> {
           preferredSize: Size(double.infinity, 100),
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: 16),
-            child: HotelFeaturesList(),
+            child: HotelFeaturesList(height: 100, width: 1000,),
           ),
         ),
       ),

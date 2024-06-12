@@ -2,9 +2,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_date_pickers/flutter_date_pickers.dart';
+import 'package:loading_indicator/loading_indicator.dart';
 import 'package:stay_travel_v3/bloc/auth/auth_bloc.dart';
 import 'package:stay_travel_v3/bloc/booking/booking_bloc.dart';
 import 'package:stay_travel_v3/bloc/booking/booking_event.dart';
+import 'package:stay_travel_v3/bloc/booking/booking_state.dart';
 import 'package:stay_travel_v3/models/booking.dart';
 import 'package:stay_travel_v3/models/hotel.dart';
 import 'package:stay_travel_v3/themes/colors.dart';
@@ -201,23 +203,46 @@ class _CreateBookingPageState extends State<CreateBookingPage> {
                 ),
                 const SliverToBoxAdapter(child: SizedBox(height: 10)),
                 SliverToBoxAdapter(
-                  child: CustomButton.normal(
-                    text: 'Забронировать',
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    onPressed: () {
-                      final userId = BlocProvider.of<AuthBloc>(context).currentUser!.id;
-                      Booking booking = Booking(
-                        userIds: [userId], 
-                        hotelId: widget.hotel.id, 
-                        createdAt: DateTime.now(), 
-                        startDate: _selectedPeriod.start, 
-                        endDate: _selectedPeriod.end, 
-                        description: _notesController.text, 
-                        status: "waiting",
-                      );
+                  child: BlocListener<BookingBloc, BookingState>(
+                    listener:(context, state) {
+                      if (state is BookingCreated) {
+                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                          content: Text("Заявка успешно создана🥳"),
+                        ));
+                      }
 
-                      context.read<BookingBloc>().add(CreateBooking(booking));
+                      if (state is BookingError) {
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          content: Text(state.message),
+                        ));
+                      }
                     },
+                    child: BlocBuilder<BookingBloc, BookingState>(
+                      builder: (context, state) {
+                        return CustomButton.load(
+                      widget: state is BookingLoading ? const LoadingIndicator(
+                        indicatorType: Indicator.ballSpinFadeLoader
+                      ) : Text('Забронировать'),
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      onPressed: () {
+                        
+                        final userId = BlocProvider.of<AuthBloc>(context).currentUser!.id;
+                        Booking booking = Booking(
+                          userIds: [userId], 
+                          hotelId: widget.hotel.id, 
+                          createdAt: DateTime.now(), 
+                          startDate: _selectedPeriod.start, 
+                          endDate: _selectedPeriod.end, 
+                          description: _notesController.text, 
+                          status: "waiting",
+                        );
+                      
+                        context.read<BookingBloc>().add(CreateBooking(booking));
+                      },
+                      );
+                      },
+                    ),
+                  
                   ),
                 )
               ],

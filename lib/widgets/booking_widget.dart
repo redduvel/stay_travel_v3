@@ -55,7 +55,7 @@ class _BookingWidgetState extends State<BookingWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final bookingStatus = _getBookingStatus(widget.booking.status);
+    _getBookingStatus(widget.booking.status);
     final bookingColor = _getColor(widget.booking.status);
 
     return Card(

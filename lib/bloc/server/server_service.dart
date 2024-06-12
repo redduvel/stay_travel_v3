@@ -5,7 +5,7 @@ class ServerService {
     // Server status check
   Future<bool> pingServer() async {
     try {
-      final response = await ApiService.instance.dio.get('/ping');
+      final response = await ApiService.instance.dio.get('/');
       Logger.log(response.data['message'], level: LogLevel.debug);
       if (response.data['status'] == "ok") {
         return true;

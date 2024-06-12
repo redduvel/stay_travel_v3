@@ -17,7 +17,7 @@ InputDecoration textFieldDecoration(String hintText, [String? labelText]) {
         borderRadius: BorderRadius.all(Radius.circular(4))
     ),
     constraints: const BoxConstraints(
-      maxHeight: 35,
+      maxHeight: 50,
       maxWidth: 500
     ),
     contentPadding: const EdgeInsets.symmetric(horizontal: 10),

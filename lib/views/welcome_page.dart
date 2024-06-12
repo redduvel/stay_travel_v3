@@ -1,6 +1,7 @@
 // Welcome Page
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:loading_indicator/loading_indicator.dart';
 import 'package:stay_travel_v3/bloc/auth/auth_bloc.dart';
 import 'package:stay_travel_v3/bloc/auth/auth_event.dart';
 import 'package:stay_travel_v3/bloc/auth/auth_state.dart';
@@ -8,6 +9,7 @@ import 'package:stay_travel_v3/bloc/server/server_bloc.dart';
 import 'package:stay_travel_v3/bloc/server/server_event.dart';
 import 'package:stay_travel_v3/bloc/server/server_state.dart';
 import 'package:stay_travel_v3/themes/text_styles.dart';
+import 'package:stay_travel_v3/utils/logger.dart';
 import 'package:stay_travel_v3/utils/routes.dart';
 
 class WelcomePage extends StatefulWidget {
@@ -54,11 +56,19 @@ class _WelcomePageState extends State<WelcomePage> {
           builder: (context, state) {
             if (state is ServerLoading) {
               return const Center(
-                child: Center(
-                  child: Text(
-                    'StayTravel',
-                    style: AppTextStyles.headerStyle,
-                  ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    SizedBox(),
+                    Text('StayTravel', style: AppTextStyles.headerStyle,),
+                    SizedBox(
+                      width: 40,
+                      height: 40,
+                      child: 
+                    LoadingIndicator(indicatorType: Indicator.ballSpinFadeLoader)
+                    )
+                  ],
                 ),
               );
             } else if (state is ServerNotAviable) {
@@ -67,13 +77,21 @@ class _WelcomePageState extends State<WelcomePage> {
               );
             }
             return const Center(
-                child: Center(
-                  child: Text(
-                    'StayTravel',
-                    style: AppTextStyles.headerStyle,
-                  ),
+              child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    SizedBox(),
+                    Text('StayTravel', style: AppTextStyles.headerStyle,),
+                    SizedBox(
+                      width: 40,
+                      height: 40,
+                      child: 
+                    LoadingIndicator(indicatorType: Indicator.ballSpinFadeLoader)
+                    )
+                  ],
                 ),
-              );
+            );
           },
         ),
       ),

@@ -100,7 +100,7 @@ class _BookingsTabState extends State<BookingsTab> {
               if (state is BookingLoaded) {
                 if (state.bookings.isEmpty) {
                   return const Center(
-                    child: Text('Здесь появятся Ваши бронированния'),
+                    child: Text('Здесь появятся Ваши бронированния.🏨'),
                   );
                 } else {
                   return CustomScrollView(

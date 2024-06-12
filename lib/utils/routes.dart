@@ -6,6 +6,7 @@ import 'package:stay_travel_v3/views/booking/create_booking_page.dart';
 import 'package:stay_travel_v3/views/hotel/hotel_page.dart';
 import 'package:stay_travel_v3/views/main/main_page.dart';
 import 'package:stay_travel_v3/views/main_for_bussines/main_page.dart';
+import 'package:stay_travel_v3/views/profile/profile_settings_page.dart';
 import 'package:stay_travel_v3/views/start_page.dart';
 import 'package:stay_travel_v3/views/welcome_page.dart';
 
@@ -21,6 +22,7 @@ class Routes {
   static const profilePage = '/profile';
   static const settingsPage = '/settings';
   static const mainPageBusinessMan = '/mainBusinessman';
+  static const profileSettingsPage = '/profileSettings';
 }
 class AppRoutes {
   static Route generateRoute(RouteSettings settings) {
@@ -48,7 +50,7 @@ class AppRoutes {
         });
       case Routes.mainPage:
         return MaterialPageRoute(builder: (context) {
-          return MainPage();
+          return const MainPage();
         });
       case Routes.bookingPage:
         return MaterialPageRoute(builder: (context) {
@@ -58,6 +60,10 @@ class AppRoutes {
       case Routes.mainPageBusinessMan:
         return MaterialPageRoute(builder: (context) {
           return const MainPageForBussines();
+        });
+      case Routes.profileSettingsPage:
+        return MaterialPageRoute(builder: (context) {
+          return const ProfileSettingsPage();
         });
       default:
         return MaterialPageRoute(

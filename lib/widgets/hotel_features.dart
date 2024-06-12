@@ -10,7 +10,10 @@ import 'package:stay_travel_v3/models/feature.dart';
 import 'package:stay_travel_v3/themes/colors.dart';
 
 class HotelFeaturesList extends StatefulWidget {
-  const HotelFeaturesList({super.key});
+  final double height;
+  final double width;
+
+  const HotelFeaturesList({super.key, required this.height, required this.width});
 
   @override
   State<HotelFeaturesList> createState() => _HotelFeaturesListState();
@@ -34,11 +37,11 @@ class _HotelFeaturesListState extends State<HotelFeaturesList> {
   Widget build(BuildContext context) {
     FeatureService featureService = FeatureService();
     return SizedBox(
-      height: 100,
+      height: widget.height,
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         child: SizedBox(
-          width: 1000,
+          width: widget.width,
           child: Row(
             children: [
               Expanded(

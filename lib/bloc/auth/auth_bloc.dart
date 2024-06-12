@@ -2,6 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:stay_travel_v3/bloc/auth/auth_service.dart';
 import 'package:stay_travel_v3/models/user.dart';
 import 'package:stay_travel_v3/services/local_storage_service.dart';
+import 'package:stay_travel_v3/utils/logger.dart';
 import 'auth_event.dart';
 import 'auth_state.dart';
 
@@ -34,13 +35,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   Future<void> _onRegisterEvent(RegisterEvent event, Emitter<AuthState> emit) async {
     emit(AuthLoading());
     try {
-      final userData = {
-        'emailOrNumber': event.emailOrNumber,
-        'password': event.password,
-        'fullname': event.fullname
-      };
-
-      final user = await authService.register(userData);
+      final user = await authService.register(event.userData);
       
       if (user != null) {
         emit(AuthAuthenticated(user: user));
@@ -61,6 +56,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         final user = await authService.me(token);
         if (user != null) {
           emit(AuthAuthenticated(user: user));
+          Logger.log("Find user", level: LogLevel.warning);
           currentUser = user;
         } else {
           emit(const AuthError('Устаревшая сессия.', AuthErrorType.outdatedSession));

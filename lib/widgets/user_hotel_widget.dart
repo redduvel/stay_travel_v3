@@ -43,7 +43,7 @@ class _UserHotelWidgetState extends State<UserHotelWidget> {
                     : Container(
                         height: 200,
                         width: double.infinity,
-                        color: AppColors.grey3,
+                        color: AppColors.grey,
                         child: const Center(
                           child: Text('Нет изображений'),
                         ),

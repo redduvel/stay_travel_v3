@@ -4,6 +4,7 @@ class Booking {
   final String hotelId;
   final String? hotelName;
   final String? hotelAddress;
+  final String? userName;
   final DateTime createdAt;
   final DateTime startDate;
   final DateTime endDate;
@@ -13,7 +14,7 @@ class Booking {
 
   Booking({
     this.id,
-    required this.userIds, // Изменено на массив userIds
+    required this.userIds,
     required this.hotelId,
     required this.createdAt,
     required this.startDate,
@@ -22,16 +23,18 @@ class Booking {
     required this.status,
     this.isDeleted = false,
     this.hotelName,
-    this.hotelAddress
+    this.hotelAddress,
+    this.userName, 
   });
 
   factory Booking.fromJson(Map<String, dynamic> json) {
     return Booking(
       id: json['_id'],
-      userIds: List<String>.from(json['users']), // Изменено на массив userIds
+      userIds: List<String>.from(json['users']),
       hotelId: json['hotel_id'],
       hotelName: json['hotel_name'],
       hotelAddress: json['hotel_address'],
+      userName: json['user_name'],
       createdAt: DateTime.parse(json['createdAt']),
       startDate: DateTime.parse(json['start_date']),
       endDate: DateTime.parse(json['end_date']),
@@ -43,15 +46,13 @@ class Booking {
 
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
       'users': userIds, // Изменено на массив userIds
       'hotel_id': hotelId,
-      'createAt': createdAt.toIso8601String(),
+      'createdAt': createdAt.toIso8601String(),
       'start_date': startDate.toIso8601String(),
       'end_date': endDate.toIso8601String(),
       'description': description,
       'status': status,
-      'isDeleted': isDeleted,
     };
   }
 }

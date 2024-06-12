@@ -18,14 +18,12 @@ class LoginEvent extends AuthEvent {
 }
 
 class RegisterEvent extends AuthEvent {
-  final String emailOrNumber;
-  final String password;
-  final String fullname;
+  final Map<String, dynamic> userData;
 
-  const RegisterEvent(this.emailOrNumber, this.password, this.fullname);
+  const RegisterEvent(this.userData);
 
   @override
-  List<Object> get props => [emailOrNumber, password, fullname];
+  List<Object> get props => [userData];
 }
 
 class CheckAuthEvent extends AuthEvent {}

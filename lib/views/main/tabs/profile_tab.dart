@@ -1,5 +1,7 @@
 // Profile Tab
 
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:skeletonizer/skeletonizer.dart';
@@ -63,23 +65,23 @@ class _ProfileTabState extends State<ProfileTab> {
                         children: [
                           const Text('Настройки аккаунта',
                               style: AppTextStyles.subheaderBoldStyle),
-                          CustomButton.icon(
+                          const CustomButton.icon(
                             text: 'Персональная информация',
                             icon: Icons.person_outline_outlined,
                             backgroundColor: AppColors.grey,
-                            onPressed: () {},
+                            onPressed: null,
                           ),
-                          CustomButton.icon(
+                          const CustomButton.icon(
                             text: 'Уведомления',
                             icon: Icons.notifications_outlined,
                             backgroundColor: AppColors.grey,
-                            onPressed: () {},
+                            onPressed: null,
                           ),
-                          CustomButton.icon(
+                          const CustomButton.icon(
                             text: 'Приватность',
                             icon: Icons.privacy_tip_outlined,
                             backgroundColor: AppColors.grey,
-                            onPressed: () {},
+                            onPressed: null,
                           ),
                           const Text(
                             'Поддержка',
@@ -94,7 +96,7 @@ class _ProfileTabState extends State<ProfileTab> {
                             height: 94,
                             backgroundColor: AppColors.grey,
                             margin: 4,
-                            onPressed: () {},
+                            onPressed: null,
                           ),
                           CustomButton.header(
                             header: 'Контакты поддержки',
@@ -104,17 +106,13 @@ class _ProfileTabState extends State<ProfileTab> {
                             height: 75,
                             backgroundColor: AppColors.grey,
                             margin: 4,
-                            onPressed: () {},
+                            onPressed: null,
                           ),
                           const SizedBox(height: 25),
-                          CustomButton.normal(
+                          const CustomButton.normal(
                             text: 'Выйти из аккаунта',
                             mainAxisAlignment: MainAxisAlignment.center,
-                            onPressed: () {
-                              context.read<AuthBloc>().add(LogoutEvent());
-                              Navigator.pushReplacementNamed(
-                                  context, Routes.mainPage);
-                            },
+                            onPressed: null
                           )
                         ],
                       ),
@@ -132,22 +130,39 @@ class _ProfileTabState extends State<ProfileTab> {
                 scrollDirection: Axis.vertical,
                 slivers: [
                    SliverToBoxAdapter(
-                    child: Align(
-                      alignment: Alignment.centerLeft,
-                      child: Row(
-                        children: [
-                          const CircleAvatar(
-                            backgroundColor: AppColors.grey3,
-                            radius: 64,
-                          ),
-                          const SizedBox(width: 20),
-                          SizedBox(
-                              width: 200,
-                              child: Text(
-                                '${state.user.firstname} ${state.user.lastname}',
-                                style: AppTextStyles.headerStyle,
-                              ))
-                        ],
+                    child: Container(
+                      width: double.infinity,
+                      height: 200,
+                      padding: EdgeInsets.all(7.5),
+                      decoration: const BoxDecoration(
+                              borderRadius: BorderRadius.all(Radius.circular(12)),
+                              gradient: LinearGradient(
+                                colors: [Color(0xfffd8112), Color(0xff0085ca)],
+                                stops: [0, 1],
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                              )),
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: Row(
+                          children: [
+                             CircleAvatar(
+                              backgroundImage: state.user.avatar != null ?
+                              MemoryImage(base64Decode(state.user.avatar!)) : null,
+                              radius: 90,
+                            ),
+                            const SizedBox(width: 10),
+                            SizedBox(
+                                width: 173,
+                                child: Text(
+                                  '${state.user.firstname} ${state.user.lastname}',
+                                  style: AppTextStyles.headerStyle.copyWith(
+                                    color: AppColors.background,
+                                    fontSize: 32
+                                  ),
+                                ))
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -163,7 +178,9 @@ class _ProfileTabState extends State<ProfileTab> {
                           icon: Icons.person_outline_outlined,
                           //width: MediaQuery.sizeOf(context).width - 32,
                           backgroundColor: AppColors.grey,
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.pushNamed(context, Routes.profileSettingsPage);
+                          },
                         ),
                         CustomButton.icon(
                           text: 'Уведомления',

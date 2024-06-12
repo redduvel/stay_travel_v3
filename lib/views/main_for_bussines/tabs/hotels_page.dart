@@ -30,48 +30,64 @@ class _HotelsPageBussinesState extends State<HotelsPageBussines> {
       appBar: AppBar(
         automaticallyImplyLeading: false,
         title: const Text('Ваши отели'),
+        actions: [
+          IconButton(onPressed: () async {
+            context.read<UserHotelsBloc>().add(const FetchUserHotels());
+          }, icon: Icon(Icons.refresh),)
+        ],
       ),
-      body: BlocBuilder<UserHotelsBloc, UserHotelsState>(
-        builder: (context, state) {
-          if (state is UserHotelsLoading) {
-            return Skeletonizer(
-              child: CustomScrollView(
-              scrollDirection: Axis.vertical,
-              slivers: [
-                SliverList(delegate: SliverChildBuilderDelegate(
-                  (context, index) {
-                    return UserHotelWidget(hotel: FakeData.fakeHotel);
-                  },
-                  childCount: 5
-                ))
-              ],
-            )
-            );
-          }
-
-          if (state is UserHotelsLoaded) {
-            return CustomScrollView(
-              scrollDirection: Axis.vertical,
-              slivers: [
-                SliverList(delegate: SliverChildBuilderDelegate(
-                  (context, index) {
-                    return UserHotelWidget(hotel: state.hotels[index]);
-                  },
-                  childCount: state.hotels.length -1
-                ))
-              ],
-            );
-          }
-
-          return Text('sbsdb');
+      body: RefreshIndicator(
+        onRefresh: () async {
+              context.read<UserHotelsBloc>().add(const FetchUserHotels());
         },
+        child: BlocBuilder<UserHotelsBloc, UserHotelsState>(
+          builder: (context, state) {
+            if (state is UserHotelsLoading) {
+              return Skeletonizer(
+                child: CustomScrollView(
+                scrollDirection: Axis.vertical,
+                slivers: [
+                  SliverList(delegate: SliverChildBuilderDelegate(
+                    (context, index) {
+                      return UserHotelWidget(hotel: FakeData.fakeHotel);
+                    },
+                    childCount: 5
+                  ))
+                ],
+              )
+              );
+            }
+        
+            if (state is UserHotelsLoaded) {
+              if (state.hotels.isEmpty) {
+                return const Center(child: Text(
+                  'Здесь появятся Ваши отели.'
+                ),);
+              }
+        
+              return CustomScrollView(
+                scrollDirection: Axis.vertical,
+                slivers: [
+                  SliverList(delegate: SliverChildBuilderDelegate(
+                    (context, index) {
+                      return UserHotelWidget(hotel: state.hotels[index]);
+                    },
+                    childCount: state.hotels.length
+                  ))
+                ],
+              );
+            }
+        
+            return SizedBox.shrink();
+          },
+        ),
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: AppColors.orange,
         foregroundColor: AppColors.background,
         child: const Icon(Icons.add, size: 32,),
         onPressed: () {
-          Navigator.push(context, MaterialPageRoute(builder:(context) => CreateHotelPage(),));
+          Navigator.push(context, MaterialPageRoute(builder:(context) => const CreateHotelPage(),));
         }),
     );
   }

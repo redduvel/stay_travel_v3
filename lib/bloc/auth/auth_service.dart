@@ -63,10 +63,11 @@ class AuthService {
 
       if (response.data['token'] != null) {
         await LocalStorageService.saveToken(response.data['token']);
-        Logger.log("Save token", level: LogLevel.info);
+
+        Logger.log("Save token: ${response.data['token']}", level: LogLevel.info);
       }
 
-      User user = User.fromJson(response.data['user']);
+      User user = User.fromJson(response.data);
 
       return user;
     } on DioException catch (e) {
@@ -83,4 +84,6 @@ class AuthService {
       throw Exception('Unknown error: $e');
     }
   }
+
+
 }

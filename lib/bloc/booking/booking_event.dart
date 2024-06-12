@@ -37,3 +37,6 @@ class DeleteBooking extends BookingEvent {
 }
 
 class FetchUserBookings extends BookingEvent {}
+
+class FetchBusinessmanBookings extends BookingEvent {}
+
