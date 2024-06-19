@@ -1,11 +1,13 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:stay_travel_v3/bloc/hotels/hotels_service.dart';
 import 'package:stay_travel_v3/models/hotel.dart';
+import 'package:stay_travel_v3/utils/logger.dart';
 import 'hotels_event.dart';
 import 'hotels_state.dart';
 
 class HotelsBloc extends Bloc<HotelsEvent, HotelsState> {
   bool isFetchingMore = false;
+  List<Hotel> hotels = [];
   final HotelService hotelService;
 
   HotelsBloc(this.hotelService) : super(HotelsInitial()) {
@@ -16,7 +18,6 @@ class HotelsBloc extends Bloc<HotelsEvent, HotelsState> {
     on<FetchFavoriteHotels>(_onFetchFavoriteHotels);
     on<AddHotelToFavorites>(_onAddHotelToFavorites);
     on<RemoveHotelFromFavorites>(_onRemoveHotelFromFavorites);
-    on<FetchHotel>(_fetchHotel);
     on<CreateHotel>(_createHotel);
   }
 
@@ -25,6 +26,7 @@ class HotelsBloc extends Bloc<HotelsEvent, HotelsState> {
     emit(HotelsLoading());
     try {
       final hotels = await hotelService.fetchHotels(skip: event.page, limit: event.limit);
+      this.hotels = hotels;
       emit(HotelsLoaded(hotels));
     } catch (e) {
       emit(HotelsError(e.toString()));
@@ -38,6 +40,7 @@ class HotelsBloc extends Bloc<HotelsEvent, HotelsState> {
         isFetchingMore = true;
         try {
           final hotels = await hotelService.fetchHotels(skip: event.page, limit: event.limit);
+          this.hotels = this.hotels + hotels;
           emit(HotelsLoaded(loadedState.hotels + hotels));
         } catch (e) {
           emit(HotelsError(e.toString()));
@@ -59,23 +62,29 @@ class HotelsBloc extends Bloc<HotelsEvent, HotelsState> {
     }
   }
 
-  Future<void> _onFilterHotelsByFeature(FilterHotelsByFeature event, Emitter<HotelsState> emit) async {
-    if (state is HotelsLoaded) {
-      final loadedState = state as HotelsLoaded;
-
-      if (event.selectedFeatures.isEmpty) {
-        emit(HotelsLoaded(loadedState.hotels)); // Return full list if no filters
-        return;
-      }
-
-      final List<Hotel> filteredHotels = loadedState.hotels.where((hotel) {
-        final hotelFeatureIds = hotel.features.map((feature) => feature.id).toSet();
-        return event.selectedFeatures.every((feature) => hotelFeatureIds.contains(feature.id));
-      }).toList();
-
-      emit(HotelsLoaded(filteredHotels));
-    }
+Future<void> _onFilterHotelsByFeature(FilterHotelsByFeature event, Emitter<HotelsState> emit) async {
+  if (event.selectedFeatures.isEmpty) {
+    emit(HotelsLoaded(hotels)); // Return full list if no filters
+    return;
   }
+
+  final List<Hotel> filteredHotels = hotels.where((hotel) {
+    final hotelFeatureIds = hotel.features.map((feature) => feature.id).toSet();
+    return event.selectedFeatures.every((feature) => hotelFeatureIds.contains(feature.id));
+  }).toList();
+
+  filteredHotels.sort((a, b) {
+    final aFeatureIds = a.features.map((feature) => feature.id).toSet();
+    final bFeatureIds = b.features.map((feature) => feature.id).toSet();
+    final aMatchCount = event.selectedFeatures.where((feature) => aFeatureIds.contains(feature.id)).length;
+    final bMatchCount = event.selectedFeatures.where((feature) => bFeatureIds.contains(feature.id)).length;
+    return bMatchCount.compareTo(aMatchCount); // Sort in descending order of match count
+  });
+
+  Logger.log("Filter hotels", level: LogLevel.info);
+  emit(HotelsFiltered(filteredHotels));
+}
+
 
   // Получение/Добавление/Удаление избранных
   Future<void> _onFetchFavoriteHotels(FetchFavoriteHotels event, Emitter<HotelsState> emit) async {
@@ -114,22 +123,6 @@ class HotelsBloc extends Bloc<HotelsEvent, HotelsState> {
       emit(HotelsLoaded(favoriteHotels));
     }
   }
-
-  // Получение опредленного отеля
-  Future<void> _fetchHotel(FetchHotel event, Emitter<HotelsState> emit) async {
-    emit(HotelLoading());
-    try {
-      final hotel = await hotelService.fetchHotelById(event.hotelId);
-      if (hotel == null) {
-        emit(const HotelError('Ошибка получения отеля.'));
-      } else {
-        emit(HotelLoaded(hotel));
-      }
-    } catch (e) {
-      emit(HotelError(e.toString()));
-    }
-  }
-
 
   // Создание отеля
 Future<void> _createHotel(CreateHotel event, Emitter<HotelsState> emit) async {

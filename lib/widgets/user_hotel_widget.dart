@@ -101,6 +101,7 @@ class _UserHotelWidgetState extends State<UserHotelWidget> {
                                       Icons.star,
                                       color: AppColors.grey2,
                                     ),
+                                    SizedBox(width: 5,),
                                     Text(widget.hotel.averageRating != null
                                         ? '${widget.hotel.averageRating}'
                                         : 'Нет рейтинга')
@@ -108,17 +109,19 @@ class _UserHotelWidgetState extends State<UserHotelWidget> {
                                 ),
                               ),
                             ),
-                            const Card(
+                             Card(
                               child: Padding(
-                                padding: EdgeInsets.symmetric(
+                                padding: const EdgeInsets.symmetric(
                                     horizontal: 10, vertical: 5),
                                 child: Row(
                                   children: [
-                                    Icon(
+                                    const Icon(
                                       Icons.people,
                                       color: AppColors.grey2,
                                     ),
-                                    Text('100')
+                                    SizedBox(width: 5,),
+
+                                    Text('${widget.hotel.totalClients}')
                                   ],
                                 ),
                               ),

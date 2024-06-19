@@ -6,6 +6,7 @@ class Hotel {
   final String description;
   final String address;
   final double? averageRating;
+  final int totalClients;
   final List<String> images;
   final List<Feature> features;
   final bool isDeleted;
@@ -19,6 +20,7 @@ class Hotel {
     required this.address,
     required this.averageRating,
     required this.images,
+    required this.totalClients,
     this.isDeleted = false,
     required this.createdAt,
     required this.features,
@@ -32,6 +34,7 @@ class Hotel {
       description: json['description'],
       address: json['address'],
       averageRating: json['averageRating'],
+      totalClients: json['totalClients'],
       images: List<String>.from(json['photos']),
       features: List<Feature>.from(json['features'].map((model) => Feature.fromJson(model)) ?? []),
       isDeleted: json['isDeleted'] ?? false,

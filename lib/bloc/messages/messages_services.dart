@@ -12,7 +12,7 @@ class MessagesServices {
 
     } catch (e) {
       Logger.log(e.toString(), level: LogLevel.error);
-      return [];
+      throw Exception(e);
     }
   }
 

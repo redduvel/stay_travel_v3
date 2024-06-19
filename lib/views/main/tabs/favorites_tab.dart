@@ -39,7 +39,7 @@ class _FavoritesTabState extends State<FavoritesTab> {
                   onPressed: () {
                     context.read<HotelsBloc>().add(FetchFavoriteHotels());
                   },
-                  icon: const Icon(Icons.history))
+                  icon: const Icon(Icons.refresh))
             ]),
         body: Padding(
           padding: const EdgeInsets.symmetric(vertical: 16),

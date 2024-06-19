@@ -15,11 +15,7 @@ class FeaturesController with ChangeNotifier {
     notifyListeners();
   }
 
-  bool isSelected(Feature feature) {
-    return _selectedFeatures.contains(feature);
-  }
+  bool isSelected(Feature feature) => _selectedFeatures.contains(feature);
 
-  List<Feature> getSelectedFeatures() {
-    return _selectedFeatures;
-  }
+  List<Feature> getSelectedFeatures() => _selectedFeatures;
 }

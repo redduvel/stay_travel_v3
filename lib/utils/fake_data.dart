@@ -27,6 +27,7 @@ class FakeData {
         icon: "spa",
       ),
     ],
+    totalClients: 5
   );
 
   static String fakeImage = 'https://rbkt.org/b/8f/1f/31/8f1f31e39041fbdb340b75d435263661.jpg';

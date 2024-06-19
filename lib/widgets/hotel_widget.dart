@@ -11,9 +11,8 @@ import 'package:stay_travel_v3/controllers/features_controller.dart';
 import 'package:stay_travel_v3/services/local_storage_service.dart';
 import 'package:stay_travel_v3/themes/colors.dart';
 import 'package:stay_travel_v3/themes/text_styles.dart';
-import 'package:stay_travel_v3/utils/logger.dart';
-import 'package:stay_travel_v3/utils/routes.dart';
 import 'package:stay_travel_v3/models/hotel.dart';
+import 'package:stay_travel_v3/views/hotel/hotel_page.dart';
 
 class HotelWidget extends StatefulWidget {
   final Hotel hotel;
@@ -59,7 +58,17 @@ class _HotelWidgetState extends State<HotelWidget> {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () => Navigator.pushNamed(context, Routes.hotelPage, arguments: widget.hotel.id),
+      onTap: () {
+        showModalBottomSheet(
+          context: context, 
+          isScrollControlled: true,
+          builder:(context) {
+            return HotelPage(hotelId: widget.hotel.id);
+          },
+
+        );
+        //Navigator.pushNamed(context, Routes.hotelPage, arguments: widget.hotel.id);
+      },
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 7.5),
         child: Card(

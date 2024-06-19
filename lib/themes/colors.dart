@@ -9,4 +9,10 @@ class AppColors {
   static const Color grey2 = Color(0xff565D6D);
   static const Color grey = Color(0xffE4E9F1);
   static const Color background = Color(0xffF8F9FB);
+  static const Color activeBooking = Color(0xFF81C00C);
+  static const Color waitingBooking = Color(0xFF7B49E6);
+  static const Color notApprovedBooking = Color(0xFFE64949);
+  static const Color completedBooking = Color(0xffF4C753);
+
+
 }

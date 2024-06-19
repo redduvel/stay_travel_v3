@@ -1,9 +1,9 @@
 // Hotel Page
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:stay_travel_v3/bloc/hotels/hotels_bloc.dart';
-import 'package:stay_travel_v3/bloc/hotels/hotels_event.dart';
-import 'package:stay_travel_v3/bloc/hotels/hotels_state.dart';
+import 'package:stay_travel_v3/bloc/hotels/hotel/hotel_bloc.dart';
+import 'package:stay_travel_v3/bloc/hotels/hotel/hotel_event.dart';
+import 'package:stay_travel_v3/bloc/hotels/hotel/hotel_state.dart';
 import 'package:stay_travel_v3/models/hotel.dart';
 import 'package:stay_travel_v3/services/local_storage_service.dart';
 import 'package:stay_travel_v3/themes/text_styles.dart';
@@ -25,62 +25,65 @@ class _HotelPageState extends State<HotelPage> {
 
   @override
   void initState() {
-    BlocProvider.of<HotelsBloc>(context)
+    BlocProvider.of<HotelBloc>(context)
         .add(FetchHotel(hotelId: widget.hotelId));
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'Детали отеля',
-          style: AppTextStyles.subheaderStyle,
+    return SizedBox(
+      height: MediaQuery.of(context).size.height-100,
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text(
+            'Детали отеля',
+            style: AppTextStyles.subheaderStyle,
+          ),
+          centerTitle: true,
         ),
-        centerTitle: true,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 7.5),
-        child: BlocListener<HotelsBloc, HotelsState>(
-          listener: (context, state) {
-            if (state is HotelError) {
-              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                content: Text(state.message),
-              ));
-            }
-          },
-          child: BlocBuilder<HotelsBloc, HotelsState>(
-            builder: (context, state) {
-              if (state is HotelLoading) {
-                return const HotelPageSkeleton();
+        body: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 7.5),
+          child: BlocListener<HotelBloc, HotelState>(
+            listener: (context, state) {
+              if (state is HotelError) {
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                  content: Text(state.message),
+                ));
               }
-
-              if (state is HotelLoaded) {
-                hotel = state.hotel;
-                return HotelPageWidget(hotel: state.hotel);
-              }
-
-              return Container();
             },
+            child: BlocBuilder<HotelBloc, HotelState>(
+              builder: (context, state) {
+                if (state is HotelLoading) {
+                  return const HotelPageSkeleton();
+                }
+      
+                if (state is HotelLoaded) {
+                  hotel = state.hotel;
+                  return HotelPageWidget(hotel: state.hotel);
+                }
+      
+                return Container();
+              },
+            ),
           ),
         ),
-      ),
-      bottomNavigationBar: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 25),
-        child: CustomButton.normal(
-          text: 'Посетить',
-          mainAxisAlignment: MainAxisAlignment.center,
-          onPressed: () {
-            if (LocalStorageService.getToken() == '') {
-              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                content: Text('Сначала нужно авторизоваться.'),
-              ));
-              return;
-            }
-
-            Navigator.pushNamed(context, Routes.bookingPage, arguments: hotel);
-          },
+        bottomNavigationBar: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 25),
+          child: CustomButton.normal(
+            text: 'Посетить',
+            mainAxisAlignment: MainAxisAlignment.center,
+            onPressed: () {
+              if (LocalStorageService.getToken() == null) {
+                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                  content: Text('Сначала нужно авторизоваться.'),
+                ));
+                return;
+              }
+      
+              Navigator.pushNamed(context, Routes.bookingPage, arguments: hotel);
+            },
+          ),
         ),
       ),
     );

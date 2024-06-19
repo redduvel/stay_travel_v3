@@ -64,15 +64,6 @@ class RemoveHotelFromFavorites extends HotelsEvent {
 }
 
 // События для определенного отеля
-class FetchHotel extends HotelsEvent {
-  final String hotelId;
-
-  const FetchHotel({required this.hotelId});
-
-  @override
-  List<Object?> get props => [hotelId];
-}
-
 class CreateHotel extends HotelsEvent {
   final Map<String, dynamic> hotelData;
 

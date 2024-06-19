@@ -29,14 +29,9 @@ class _HotelsTabState extends State<HotelsTab> {
   @override
   void initState() {
     super.initState();
+    context.read<HotelsBloc>().add(FetchHotels(page: currentPage, limit: limit));
     _scrollController = ScrollController();
     _scrollController.addListener(_onScroll);
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    context.read<HotelsBloc>().add(FetchHotels(page: 1, limit: limit));
   }
 
   @override
@@ -88,6 +83,12 @@ class _HotelsTabState extends State<HotelsTab> {
               return _buildErrorState();
             } else if (state is HotelsLoaded) {
               return _buildLoadedState(state.hotels);
+            } else if (state is HotelsFiltered) {
+              if (state.hotels.isEmpty) {
+                return _buildLoadedState(context.read<HotelsBloc>().hotels);
+              } else {
+                return _buildLoadedState(state.hotels);
+              }
             } else {
               return _buildEmptyState();
             }
@@ -165,6 +166,7 @@ class _HotelsTabState extends State<HotelsTab> {
                     images: [],
                     createdAt: DateTime.now(),
                     features: [],
+                    totalClients: 0
                   ),
                 ),
               ),

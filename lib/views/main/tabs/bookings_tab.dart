@@ -37,7 +37,7 @@ class _BookingsTabState extends State<BookingsTab> {
           actions: [
             IconButton(onPressed: () {
               context.read<BookingBloc>().add(FetchUserBookings());
-            }, icon: const Icon(Icons.history))
+            }, icon: const Icon(Icons.refresh))
           ],
           bottom: PreferredSize(
               preferredSize: const Size(double.infinity, 60),
@@ -57,10 +57,10 @@ class _BookingsTabState extends State<BookingsTab> {
                                   label: Text(
                                     BookingStatus.bookingStatuses[index].UIName,
                                     style: const TextStyle(
-                                      color: AppColors.black,
+                                      color: AppColors.background,
                                     ),
                                   ),
-                                  backgroundColor: AppColors.grey,
+                                  backgroundColor: BookingStatus.bookingStatuses[index].color,
                                   side: BorderSide.none,
                                 ),
                               ),
@@ -70,7 +70,7 @@ class _BookingsTabState extends State<BookingsTab> {
               )),
         ),
         body: Padding(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(7.5),
             child: BlocBuilder<BookingBloc, BookingState>(
                 builder: (context, state) {
               if (state is BookingLoading) {

@@ -1,4 +1,3 @@
-import 'dart:ffi';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:stay_travel_v3/bloc/messages/messages_event.dart';
@@ -24,7 +23,7 @@ class MessagesBloc extends Bloc<MessagesEvent, MessageState> {
       if (result) {
         emit(MessageSended(result: result));
       } else {
-        emit(MessageError(message: 'Ошибка отправки ответа.'));
+        emit(const MessageError(message: 'Ошибка отправки ответа.'));
       }      
     } catch (e) {
       Logger.log(e.toString(), level: LogLevel.error);
@@ -39,7 +38,6 @@ class MessagesBloc extends Bloc<MessagesEvent, MessageState> {
 
       emit(MessageLoaded(messages: messages));
     } catch (e) {
-      Logger.log(e.toString(), level: LogLevel.error);
       emit(MessageError(message: e.toString()));
     }
   }

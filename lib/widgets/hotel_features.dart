@@ -85,7 +85,7 @@ class _HotelFeaturesListState extends State<HotelFeaturesList> {
                                 return GestureDetector(
                                   onTap: () {
                                     provider.toggleFeature(feature);
-                                    BlocProvider.of<HotelsBloc>(context).add(FilterHotelsByFeature(provider.selectedFeatures));
+                                    context.read<HotelsBloc>().add(FilterHotelsByFeature(provider.selectedFeatures));
                                   },
                                   child: Chip(
                                     avatar: Icon(
@@ -108,7 +108,7 @@ class _HotelFeaturesListState extends State<HotelFeaturesList> {
                                 return GestureDetector(
                                   onTap: () {
                                     provider.toggleFeature(feature);
-                                    BlocProvider.of<HotelsBloc>(context).add(FilterHotelsByFeature(provider.selectedFeatures));
+                                    context.read<HotelsBloc>().add(FilterHotelsByFeature(provider.selectedFeatures));
                                   },
                                   child: Chip(
                                     avatar: Icon(
