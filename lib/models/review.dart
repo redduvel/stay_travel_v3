@@ -4,13 +4,17 @@ class Review {
   final String text;
   final DateTime? createdAt;
   final double rating;
+  final String? avatar;
+  final String? userName;
 
   Review({
     required this.userId,
     required this.hotelId,
     required this.text,
     required this.rating,
-    this.createdAt
+    this.createdAt,
+    this.avatar,
+    this.userName
   });
 
   factory Review.fromJson(Map<String, dynamic> json) {
@@ -20,6 +24,8 @@ class Review {
       hotelId: json['hotel_id'],
       text: json['text'],
       rating: json['rating'].toDouble(),
+      avatar: json['user_avatar'],
+      userName: json['user_first_name']
     );
   }
 

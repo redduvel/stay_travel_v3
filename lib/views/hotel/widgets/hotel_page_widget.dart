@@ -268,15 +268,17 @@ class _HotelPageWidgetState extends State<HotelPageWidget> {
                     children: [
                       Row(
                         children: [
-                          const CircleAvatar(
-                            radius: 26,
-                          ),
+                          CircleAvatar(
+                              backgroundImage: state.reviews[index].avatar != null ?
+                              MemoryImage(base64Decode(state.reviews[index].avatar!)) : null,
+                              radius: 24,
+                            ),
                           const SizedBox(width: 10),
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                'Matvey',
+                                state.reviews[index].userName!,
                                 style: AppTextStyles.subheaderStyle
                                     .copyWith(color: AppColors.black),
                               ),
